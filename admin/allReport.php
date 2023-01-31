@@ -228,7 +228,6 @@ if(isset($_POST['find'])){
                         <th scope="col">Meeting Name</th>
                         <th scope="col">Register By</th>
                         <th scope="col">Image</th>
-                        <th scope="col">Verify</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -246,11 +245,7 @@ if(isset($_POST['find'])){
                         <td><?=$getDataForTables['meetingName']?></td>
                         <td><?=$getDataForTables['registerEmail']?></td>
                         <td><img class="img-fluid" src="../userImage/<?=$getDataForTables['photos']?>" alt="" height="50px" width="50px"></td>
-                        <td>
-                          <button type="button" class="btn btn-outline-warning btn-icon-text" onclick="location.href='./verify.php?registerId=<?=$getDataForTables['id']?>&visitingId=<?=$getDataForTables['visitingID']?>';">
-                            Verify Visitor
-                          </button>
-                        </tr>
+                       
                       <?php
                         }
                       ?>
@@ -299,68 +294,7 @@ if(isset($_POST['find'])){
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
 
-  <script>
-    function getheading() {
-      document.getElementById('heading').disabled = true
-      axios.get("../include/getheading.php").then((response) => {
-        console.log(response);
-        let options = '<option value="">Select one option</option>';
-        for (let each of response.data.data) {
-          options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('heading').innerHTML = options;
-        document.getElementById('heading').disabled = false;
-      })
-    }
-
-    function getTechExpert() {
-      let selection = document.getElementById('heading').value;
-      if (!selection) return;
-      document.getElementById('techIn').disabled = true
-      document.getElementById('techIn').innerHTML = '<option value="">Loading</option>';
-      axios.get("../include/gettech.php?heading=" + selection).then((response) => {
-        console.log(response);
-        let options = '';
-        for (let each of response.data.data) {
-            options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('techIn').innerHTML = options;
-        document.getElementById('techIn').disabled = false;
-      })
-    }
-
-    getheading();
-  
-  function getSchool() {
-      document.getElementById('school').disabled = true
-      axios.get("../include/getSchool.php").then((response) => {
-        console.log(response);
-        let options = '<option value="All">All</option>';
-        for (let each of response.data.data) {
-          options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('school').innerHTML = options;
-        document.getElementById('school').disabled = false;
-      })
-    }
-
-    function getDept() {
-      let selection = document.getElementById('school').value;
-      if (!selection) return;
-      document.getElementById('dept').disabled = true
-      document.getElementById('dept').innerHTML = '<option value="">Loading</option>';
-      axios.get("../include/getDept.php?school=" + selection).then((response) => {
-        console.log(response);
-        let options = '<option value="All">All</option>';
-        for (let each of response.data.data) {
-            options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('dept').innerHTML = options;
-        document.getElementById('dept').disabled = false;
-      })
-    }
-    getSchool()
-  </script>
+ 
 
 </body>
 

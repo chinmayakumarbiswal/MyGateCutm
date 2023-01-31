@@ -18,7 +18,7 @@ if(isset($_POST['addAdmin'])){
   // echo $school."<br>";
   // echo $dept."<br>";
 
-  $query="INSERT INTO admindata (email,campus) VALUES('$emailAdd','$campus')";
+  $query="INSERT INTO admindata (campus,email) VALUES('$campus','$emailAdd')";
   $run=mysqli_query($db,$query) or die(mysqli_error($db));
   if ($run) {
     echo "<script>alert('Admin Added Successfully.');</script>";
@@ -39,7 +39,7 @@ $getDataForTable=getAllAdminDetailsByAdmin($db);
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Cutm Tech Expert</title>
+  <title>MyGate Cutm</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -74,7 +74,7 @@ $getDataForTable=getAllAdminDetailsByAdmin($db);
     <div class="d-flex align-items-center justify-content-between">
       <a href="admin.php" class="logo d-flex align-items-center">
         <img src="../icon.webp" alt="">
-        <span class="d-none d-lg-block">TechExpert</span>
+        <span class="d-none d-lg-block">MyGate</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -115,42 +115,36 @@ $getDataForTable=getAllAdminDetailsByAdmin($db);
 
   <ul class="sidebar-nav" id="sidebar-nav">
 
-    <li class="nav-item">
-      <a class="nav-link " href="./admin.php">
-        <i class="bi bi-grid"></i>
-        <span>Dashboard</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="./report.php">
-        <i class="ri-bar-chart-box-line"></i>
-        <span>Report</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="./addAdmin.php">
-        <i class="bx bx-message-square-add"></i>
-        <span>Add Admin</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="./addStudent.php">
-        <i class="ri ri-user-add-line"></i>
-        <span>Add Student</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="./addTech.php">
-        <i class="bx bx-add-to-queue"></i>
-        <span>Add Tech</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="./addSchool.php">
-        <i class="bx bxs-buildings"></i>
-        <span>Add School</span>
-      </a>
-    </li>
+  <li class="nav-item">
+        <a class="nav-link " href="./admin.php">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="./report.php">
+          <i class="ri-bar-chart-box-line"></i>
+          <span>Report</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="./addAdmin.php">
+          <i class="bx bx-message-square-add"></i>
+          <span>Add Admin</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="./addUser.php">
+            <i class="ri ri-user-add-line"></i>
+            <span>Add User</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="./addGate.php">
+            <i class="bx bxs-door-open"></i>
+            <span>Add Gate User</span>
+        </a>
+      </li>
 
 
   </ul>
@@ -189,13 +183,16 @@ $getDataForTable=getAllAdminDetailsByAdmin($db);
                   <label class="col-sm-2 col-form-label">Campus</label>
                   <div class="col-sm-10">
                     <select class="form-select" aria-label="Default select example" name="campus">
-                      <option value="Bhubaneswar" selected>Bhubaneswar</option>
-                      <option value="Balasore">Balasore</option>
-                      <option value="Balangir">Balangir</option>
-                      <option value="Paralakhemundi">Paralakhemundi</option>
-                      <option value="Rayagada">Rayagada</option>
-                      <option value="Chatrapur">Chatrapur</option>
-                      <option value="Vizianagaram">Vizianagaram</option>
+                    <?php    
+                        $getMyCampus=getAllCampus($db);
+                        foreach($getMyCampus as $getMyCampuss){
+                      ?>
+
+                      <option value="<?=$getMyCampuss['name']?>"><?=$getMyCampuss['name']?></option>
+                      
+                      <?php    
+                        }
+                      ?>
                     </select>
                   </div>
                 </div>

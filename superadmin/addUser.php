@@ -13,17 +13,14 @@ else {
 
 if(isset($_POST['addStudent'])){
   $name=mysqli_real_escape_string($db,$_POST['name']);
-  $regd=mysqli_real_escape_string($db,$_POST['regd']);
   $email=mysqli_real_escape_string($db,$_POST['email']);
   $campus=mysqli_real_escape_string($db,$_POST['campus']);
-  $school=mysqli_real_escape_string($db,$_POST['school']);
-  $dept=mysqli_real_escape_string($db,$_POST['dept']);
   
 
-  $query="INSERT INTO studentdata(name,regd,email,campus,school,dept) VALUES('$name','$regd','$email','$campus','$school','$dept')";
+  $query="INSERT INTO userdata(name,email,campus) VALUES('$name','$email','$campus')";
   $run=mysqli_query($db,$query) or die(mysqli_error($db));
   if ($run) {
-    echo "<script>alert('Student added Successfully.');</script>";
+    echo "<script>alert('User added Successfully.');</script>";
   }else {
     echo "<script>alert('Sorry Somthing wrong.');</script>";
   }
@@ -38,21 +35,18 @@ if(isset($_POST['importExcel'])){
 	if($ext=='xlsx'){
 		require('./PHPExcel/PHPExcel.php');
 		require('./PHPExcel/PHPExcel/IOFactory.php');
-		
+		$totalIs=0;
 		
 		$obj=PHPExcel_IOFactory::load($file);
 		foreach($obj->getWorksheetIterator() as $sheet){
 			$getHighestRow=$sheet->getHighestRow();
 			for($i=2;$i<=$getHighestRow;$i++){
 				$name=$sheet->getCellByColumnAndRow(0,$i)->getValue();
-				$regd=$sheet->getCellByColumnAndRow(1,$i)->getValue();
-        $email=$sheet->getCellByColumnAndRow(2,$i)->getValue();
-        $campus=$sheet->getCellByColumnAndRow(3,$i)->getValue();
-        $school=$sheet->getCellByColumnAndRow(4,$i)->getValue();
-        $dept=$sheet->getCellByColumnAndRow(5,$i)->getValue();
+        $email=$sheet->getCellByColumnAndRow(1,$i)->getValue();
+        $campus=$sheet->getCellByColumnAndRow(2,$i)->getValue();
                 
 				if($name!=''){
-					$query="INSERT INTO studentdata(name,regd,email,campus,school,dept) VALUES('$name','$regd','$email','$campus','$school','$dept')";
+					$query="INSERT INTO userdata(name,email,campus) VALUES('$name','$email','$campus')";
           $run=mysqli_query($db,$query) or die(mysqli_error($db));
                     
 				}
@@ -65,7 +59,7 @@ if(isset($_POST['importExcel'])){
 	}
 }
 
-$getDataForTable=getAllStudentByAdminForList($db); 
+$getDataForTable=getAllUserByAdminForList($db); 
 
 
 ?>
@@ -77,7 +71,7 @@ $getDataForTable=getAllStudentByAdminForList($db);
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Cutm Tech Expert</title>
+  <title>MyGate CUTM</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -137,7 +131,7 @@ $getDataForTable=getAllStudentByAdminForList($db);
     <div class="d-flex align-items-center justify-content-between">
       <a href="admin.php" class="logo d-flex align-items-center">
         <img src="../icon.webp" alt="">
-        <span class="d-none d-lg-block">Tech Expert</span>
+        <span class="d-none d-lg-block">MyGate</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -179,42 +173,35 @@ $getDataForTable=getAllStudentByAdminForList($db);
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link " href="./admin.php">
-        <i class="bi bi-grid"></i>
-        <span>Dashboard</span>
-      </a>
+        <a class="nav-link " href="./admin.php">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+        </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="./report.php">
-        <i class="ri-bar-chart-box-line"></i>
-        <span>Report</span>
-      </a>
+        <a class="nav-link " href="./report.php">
+            <i class="ri-bar-chart-box-line"></i>
+            <span>Report</span>
+        </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="./addAdmin.php">
-        <i class="bx bx-message-square-add"></i>
-        <span>Add Admin</span>
-      </a>
+        <a class="nav-link " href="./addAdmin.php">
+            <i class="bx bx-message-square-add"></i>
+            <span>Add Admin</span>
+        </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="./addStudent.php">
-        <i class="ri ri-user-add-line"></i>
-        <span>Add Student</span>
-      </a>
+        <a class="nav-link " href="./addUser.php">
+            <i class="ri ri-user-add-line"></i>
+            <span>Add User</span>
+        </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link " href="./addTech.php">
-        <i class="bx bx-add-to-queue"></i>
-        <span>Add Tech</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="./addSchool.php">
-        <i class="bx bxs-buildings"></i>
-        <span>Add School</span>
-      </a>
-    </li>
-
+        <a class="nav-link " href="./addGate.php">
+            <i class="bx bxs-door-open"></i>
+            <span>Add Gate User</span>
+        </a>
+      </li>
 
   </ul>
 
@@ -227,7 +214,7 @@ $getDataForTable=getAllStudentByAdminForList($db);
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="admin.php">Home</a></li>
-          <li class="breadcrumb-item active">Add Student</li>
+          <li class="breadcrumb-item active">Add User</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -242,18 +229,13 @@ $getDataForTable=getAllStudentByAdminForList($db);
 
               <!-- General Form Elements -->
               <form action="" method="post">
-              <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Name of Student</label>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Name of Student/Employee</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="name" required>
                   </div>
                 </div>
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Name of RegistrationNo</label>
-                  <div class="col-sm-10">
-                    <input type="number" class="form-control" name="regd" required>
-                  </div>
-                </div>
+                
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">Name of Email</label>
                   <div class="col-sm-10">
@@ -263,40 +245,26 @@ $getDataForTable=getAllStudentByAdminForList($db);
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">Campus</label>
                   <div class="col-sm-10">
-                    <select class="form-select" aria-label="Default select example" name="campus">
-                      <option value="Bhubaneswar" selected>Bhubaneswar</option>
-                      <option value="Balasore">Balasore</option>
-                      <option value="Balangir">Balangir</option>
-                      <option value="Paralakhemundi">Paralakhemundi</option>
-                      <option value="Rayagada">Rayagada</option>
-                      <option value="Chatrapur">Chatrapur</option>
-                      <option value="Vizianagaram">Vizianagaram</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">School</label>
-                  <div class="col-sm-10">
-                    <select class="form-select" aria-label="Default select example" name="school" id="school" onChange="getDept()">
+                  <select class="form-select" aria-label="Default select example" name="campus">
+                    <?php    
+                        $getMyCampus=getAllCampus($db);
+                        foreach($getMyCampus as $getMyCampuss){
+                      ?>
+
+                      <option value="<?=$getMyCampuss['name']?>"><?=$getMyCampuss['name']?></option>
                       
-                    </select>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Department</label>
-                  <div class="col-sm-10">
-                    <select class="form-select" aria-label="Default select example" name="dept" id="dept">
-                    <option selected>Select School</option>
+                      <?php    
+                        }
+                      ?>
                     </select>
                   </div>
                 </div>
                 
-                
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Add Area of Work</label>
+                  <label class="col-sm-2 col-form-label">Add User</label>
                   <div class="col-sm-10">
-                    <button type="submit" class="btn btn-primary" name="addStudent">Add Entered Data</button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importExcel">Import Student Data from Excel</button>
+                    <button type="submit" class="btn btn-primary" name="addStudent">Add Individual Data</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importExcel">Import User Data from Excel</button>
                   </div>
                 </div>
 
@@ -325,11 +293,8 @@ $getDataForTable=getAllStudentByAdminForList($db);
                     <thead>
                       <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Registration No</th>
                         <th scope="col">Email</th>
                         <th scope="col">Campus</th>
-                        <th scope="col">School</th>
-                        <th scope="col">Dept</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -338,11 +303,8 @@ $getDataForTable=getAllStudentByAdminForList($db);
                       ?>
                       <tr class="table-primary">
                         <td><?=$getDataForTables['name']?></td>
-                        <td><?=$getDataForTables['regd']?></td>
                         <td><?=$getDataForTables['email']?></td>
                         <td><?=$getDataForTables['campus']?></td>
-                        <td><?=$getDataForTables['school']?></td>
-                        <td><?=$getDataForTables['dept']?></td>
                       </tr>
                       <?php    
                         }
@@ -387,38 +349,6 @@ $getDataForTable=getAllStudentByAdminForList($db);
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
-
-  <script>
-    function getSchool() {
-      document.getElementById('school').disabled = true
-      axios.get("../include/getSchool.php").then((response) => {
-        console.log(response);
-        let options = '<option value="">Select one option</option>';
-        for (let each of response.data.data) {
-          options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('school').innerHTML = options;
-        document.getElementById('school').disabled = false;
-      })
-    }
-
-    function getDept() {
-      let selection = document.getElementById('school').value;
-      if (!selection) return;
-      document.getElementById('dept').disabled = true
-      document.getElementById('dept').innerHTML = '<option value="">Loading</option>';
-      axios.get("../include/getDept.php?school=" + selection).then((response) => {
-        console.log(response);
-        let options = '';
-        for (let each of response.data.data) {
-            options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('dept').innerHTML = options;
-        document.getElementById('dept').disabled = false;
-      })
-    }
-    getSchool()
-  </script>
 
 
 </body>

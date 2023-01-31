@@ -40,7 +40,7 @@
             $_SESSION['token']=$token;
             if ($email == 'situ@chinmayakumarbiswal.in') {
                 $_SESSION['userType']="superAdmin";
-                header('location:./superadmin/error.html');
+                header('location:./superadmin/admin.php');
             }else {
                 $_SESSION['userType']="admin";
                 header('location:./admin/admin.php');

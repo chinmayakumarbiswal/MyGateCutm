@@ -232,7 +232,6 @@ if(isset($_POST['find'])){
                         <th scope="col">Meeting Name</th>
                         <th scope="col">Register By</th>
                         <th scope="col">Image</th>
-                        <th scope="col">Verify</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -250,11 +249,7 @@ if(isset($_POST['find'])){
                         <td><?=$getDataForTables['meetingName']?></td>
                         <td><?=$getDataForTables['registerEmail']?></td>
                         <td><img class="img-fluid" src="../userImage/<?=$getDataForTables['photos']?>" alt="" height="50px" width="50px"></td>
-                        <td>
-                          <button type="button" class="btn btn-outline-warning btn-icon-text" onclick="location.href='./verify.php?registerId=<?=$getDataForTables['id']?>&visitingId=<?=$getDataForTables['visitingID']?>';">
-                            Verify Visitor
-                          </button>
-                        </tr>
+                        
                       <?php
                         }
                       ?>

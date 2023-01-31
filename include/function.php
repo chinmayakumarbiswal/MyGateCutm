@@ -154,4 +154,43 @@
         $data=mysqli_fetch_assoc($run);
         return $data;
     }
+
+    function getAllAdminDetailsByAdmin($db){
+        $query="SELECT * FROM admindata";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
+
+    function getAllCampus($db){
+        $query="SELECT * FROM campus";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
+
+    function getAllUserByAdminForList($db){
+        $query="SELECT * FROM userdata ORDER BY id DESC";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
+    function getAllGateDetailsByAdmin($db){
+        $query="SELECT * FROM gate ORDER BY id DESC";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
 ?>

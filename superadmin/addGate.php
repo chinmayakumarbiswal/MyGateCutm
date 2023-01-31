@@ -6,32 +6,31 @@ if($_SESSION['userType']=="superAdmin")
   $userEmail=$_SESSION['email'];
   $name=$_SESSION['name'];
   $picture=$_SESSION['image'];
-  $getAdminUserData=getAdminDetails($db,$userEmail);
-  date_default_timezone_set("Asia/Kolkata");
-  $toDayDateIs=date("Y-m-d");
-
 }
 else {
   header('location:../include/logout.php');
 }
-if(isset($_POST['find'])){
-  $visitingNo=mysqli_real_escape_string($db,$_POST['visitingNo']);
-  $nameOfVisit=mysqli_real_escape_string($db,$_POST['nameOfVisit']);
 
-  if ($visitingNo) {
-    $getDataForTable=getAllDetaildInGateWithVigitNo($db,$getAdminUserData['campus'],$toDayDateIs,$visitingNo);  
-  }else if ($nameOfVisit) {
-    echo $nameOfVisit;
-    echo $getAdminUserData['campus'];
-    echo $toDayDateIs;
-    
-    $getDataForTable=getAllDetaildInGateWithName($db,$getAdminUserData['campus'],$toDayDateIs,$nameOfVisit);
-  }else{
-    $getDataForTable=getAllDetaildInGate($db,$getAdminUserData['campus'],$toDayDateIs);   
+if(isset($_POST['addAdmin'])){
+  $emailAdd=mysqli_real_escape_string($db,$_POST['email']);
+  $campus=mysqli_real_escape_string($db,$_POST['campus']);
+  $gate=mysqli_real_escape_string($db,$_POST['gate']);
+  
+  // echo $school."<br>";
+  // echo $dept."<br>";
+
+  $query="INSERT INTO gate (email,campus,gate) VALUES('$emailAdd','$campus','$gate')";
+  $run=mysqli_query($db,$query) or die(mysqli_error($db));
+  if ($run) {
+    echo "<script>alert('Gate Added Successfully.');</script>";
+  }else {
+    echo "<script>alert('Sorry Somthing wrong.');</script>";
   }
-}else{
-  $getDataForTable=getAllDetaildInGate($db,$getAdminUserData['campus'],$toDayDateIs);   
 }
+
+$getDataForTable=getAllGateDetailsByAdmin($db); 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -115,9 +114,9 @@ if(isset($_POST['find'])){
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
 
-    <ul class="sidebar-nav" id="sidebar-nav">
+  <ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
+  <li class="nav-item">
         <a class="nav-link " href="./admin.php">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
@@ -147,10 +146,9 @@ if(isset($_POST['find'])){
             <span>Add Gate User</span>
         </a>
       </li>
-      
 
 
-    </ul>
+  </ul>
 
   </aside><!-- End Sidebar-->
 
@@ -160,7 +158,7 @@ if(isset($_POST['find'])){
       <h1>Dashboard</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="./admin.php">Home</a></li>
+          <li class="breadcrumb-item"><a href="admin.php">Home</a></li>
           <li class="breadcrumb-item active">Dashboard</li>
         </ol>
       </nav>
@@ -172,46 +170,45 @@ if(isset($_POST['find'])){
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Visitor List <?=$toDayDateIs?></h5>
+              <h5 class="card-title">Add Admin</h5>
 
               <!-- General Form Elements -->
               <form action="" method="post" enctype="multipart/form-data">
                 <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Visiting Number</label>
+                  <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="visitingNo" list="visitingNoList" value="">
-                    <datalist id="visitingNoList">
-                      <?php    
-                        $getVisitorId=getAllVisitorId($db,$toDayDateIs,$getAdminUserData['campus']);
-                        foreach($getVisitorId as $getVisitorIds){
-                      ?>
-                        <option value="<?=$getVisitorIds['visitingID']?>"><?=$getVisitorIds['visitingID']?></option>
-                      <?php    
-                        }
-                      ?>
-                    </datalist>
+                    <input type="email" class="form-control" name="email" required>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Name of Visitor</label>
+                  <label class="col-sm-2 col-form-label">Campus</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="nameOfVisit" list="visitingNameList" value="">
-                    <datalist id="visitingNameList">
-                      <?php    
-                        $getVisitorName=getAllVisitorName($db,$toDayDateIs,$getAdminUserData['campus']);
-                        foreach($getVisitorName as $getVisitorNames){
+                    <select class="form-select" aria-label="Default select example" name="campus">
+                    <?php    
+                        $getMyCampus=getAllCampus($db);
+                        foreach($getMyCampus as $getMyCampuss){
                       ?>
-                        <option value="<?=$getVisitorNames['nameOfVisit']?>"><?=$getVisitorNames['nameOfVisit']?></option>
+
+                      <option value="<?=$getMyCampuss['name']?>"><?=$getMyCampuss['name']?></option>
+                      
                       <?php    
                         }
                       ?>
-                    </datalist>
+                    </select>
                   </div>
                 </div>
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Search List</label>
+                  <label class="col-sm-2 col-form-label">Name Gate No</label>
                   <div class="col-sm-10">
-                    <button type="submit" class="btn btn-primary" name="find">Find</button>
+                    <input type="text" class="form-control" name="gate" required>
+                  </div>
+                </div>
+                
+                
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Add Admin</label>
+                  <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary" name="addAdmin">Add</button>
                   </div>
                 </div>
 
@@ -234,45 +231,30 @@ if(isset($_POST['find'])){
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
                 <div class="card-body">
-                  <h5 class="card-title">Applied Student</h5>
+                  <h5 class="card-title">Admin List</h5>
 
-                  <table class="table table-borderless datatable">
-                  <thead>
+                  <table class="table">
+                    <thead>
                       <tr>
-                      <th scope="col">Visiting ID</th>
-                        <th scope="col">Name Of Visitor</th>
-                        <th scope="col">Comming From</th>
-                        <th scope="col">Date of Visiting</th>
-                        <th scope="col">Mobile</th>
-                        <th scope="col">Vehicle Number</th>
-                        <th scope="col">Purpose</th>
-                        <th scope="col">Meeting Name</th>
-                        <th scope="col">Register By</th>
-                        <th scope="col">Image</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Campus</th>
+                        <th scope="col">Gate No</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <?php     
+                      <?php    
                         foreach($getDataForTable as $getDataForTables){
                       ?>
-                      <tr>
-                        <td><?=$getDataForTables['visitingID']?></td>
-                        <td><?=$getDataForTables['nameOfVisit']?></td>
-                        <td><?=$getDataForTables['org']?></td>
-                        <td><?=$getDataForTables['date']?></td>
-                        <td><?=$getDataForTables['no']?></td>
-                        <td><?=$getDataForTables['vehicleno']?></td>
-                        <td><?=$getDataForTables['purpose']?></td>
-                        <td><?=$getDataForTables['meetingName']?></td>
-                        <td><?=$getDataForTables['registerEmail']?></td>
-                        <td><img class="img-fluid" src="../userImage/<?=$getDataForTables['photos']?>" alt="" height="50px" width="50px"></td>
-                        
-                      <?php
+                      <tr class="table-primary">
+                        <td><?=$getDataForTables['email']?></td>
+                        <td><?=$getDataForTables['campus']?></td>
+                        <td><?=$getDataForTables['gate']?></td>
+                      </tr>
+                      <?php    
                         }
                       ?>
                     </tbody>
                   </table>
-
                 </div>
 
               </div>
@@ -305,6 +287,9 @@ if(isset($_POST['find'])){
 
   <!-- Template Main JS File -->
   <script src="../assets/js/main.js"></script>
+
+
+
 
 </body>
 
