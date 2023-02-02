@@ -1,6 +1,7 @@
 <?php
 require('../include/database.php');
 require('../include/function.php');
+require('../mailer.php');
 if($_SESSION['userType']=="gate")
 {
   $userEmail=$_SESSION['email'];
@@ -51,9 +52,48 @@ if(isset($_POST['register'])){
     if(file_put_contents($file, $image_base64)){
       $query="UPDATE visitordata SET `nameOfVisit`='$nameOfVisit',`org`='$org',`date`='$date',`no`='$number',`vehicleno`='$vehicle',`purpose`='$purpose',`meetingName`='$name',`registerEmail`='$email',`campus`='$campus',`gate`='$gateno',`photos`='$fileName' WHERE id='$registerId' AND visitingID='$visitingId'";
       $run=mysqli_query($db,$query) or die(mysqli_error($db));
+      $myimg="https://mygate.cutm.ac.in/userImage/".$fileName;
       if ($run) {
-        echo "<script>alert('Successfully Update your visiting details.');</script>";
-        $getVerifyData=getVerifyData($db,$registerId,$visitingId);
+        $msg="<html>
+                <body>
+                    <p>Hello ".$name.", ".$nameOfVisit." came to campus to meet you</p>
+                    <p>You find out the details</p>
+                    <table border=''>
+                        <tr>
+                            <td>Visitor name</td>
+                            <td>".$nameOfVisit."</td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td>".$org."</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Visiting</td>
+                            <td>".$date."</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile No.</td>
+                            <td>".$number."</td>
+                        </tr>
+                        <tr>
+                            <td>Vechicle No</td>
+                            <td>".$vehicle."</td>
+                        </tr>
+                        <tr>
+                            <td>Verify Image</td>
+                            <td><img src='$myimg' alt='$myimg' height='200px' width='200px'></td>
+                        </tr>
+                    </table>
+                </body>
+              </html>";
+        $isMailSend=smtp_mailer($email,'Someone Waiting for you',$msg);
+
+        if ($isMailSend == "Sent") {
+          echo "<script>alert('You Successfully submit your visiting details.');window.location.href = './report.php';</script>";
+          
+        }else {
+          echo"<script>alert('We are sorry somthing wrong in my mailer!');</script>";
+        }
       }else {
         echo "<script>alert('Sorry Somthing wrong.');</script>";
       }
@@ -63,13 +103,51 @@ if(isset($_POST['register'])){
   }else{
     $query="UPDATE visitordata SET `nameOfVisit`='$nameOfVisit',`org`='$org',`date`='$date',`no`='$number',`vehicleno`='$vehicle',`purpose`='$purpose',`meetingName`='$name',`registerEmail`='$email',`campus`='$campus',`gate`='$gateno' WHERE id='$registerId' AND visitingID='$visitingId'";
     $run=mysqli_query($db,$query) or die(mysqli_error($db));
+    $myimg="https://mygate.cutm.ac.in/userImage/images.png";
     if ($run) {
-        echo "<script>alert('Successfully Update your visiting details but you donot update the photo.');</script>";
-        $getVerifyData=getVerifyData($db,$registerId,$visitingId);
+      $msg="<html>
+                <body>
+                    <p>Hello ".$name.", ".$nameOfVisit." came to campus to meet you</p>
+                    <p>You find out the details</p>
+                    <table border=''>
+                        <tr>
+                            <td>Visitor name</td>
+                            <td>".$nameOfVisit."</td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td>".$org."</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Visiting</td>
+                            <td>".$date."</td>
+                        </tr>
+                        <tr>
+                            <td>Mobile No.</td>
+                            <td>".$number."</td>
+                        </tr>
+                        <tr>
+                            <td>Vechicle No</td>
+                            <td>".$vehicle."</td>
+                        </tr>
+                        <tr>
+                            <td>Verify Image</td>
+                            <td><img src='$myimg' alt='$myimg' height='200px' width='200px'></td>
+                        </tr>
+                    </table>
+                </body>
+              </html>";
+      $isMailSend=smtp_mailer($email,'Someone Waiting for you',$msg);
+
+      if ($isMailSend == "Sent") {
+        echo "<script>alert('You Successfully submit your visiting details without image .');window.location.href = './report.php';</script>";
+          
+      }else {
+        echo"<script>alert('We are sorry somthing wrong in my mailer!');</script>";
+      }
     }else {
       echo "<script>alert('Sorry Somthing wrong.');</script>";
     }
-    // echo "<script>alert('Please Take photo of the user.');</script>";
   }
 }
 
