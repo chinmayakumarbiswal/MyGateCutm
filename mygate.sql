@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 29, 2023 at 06:54 PM
+-- Generation Time: Jan 31, 2023 at 06:39 PM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.3.9
 
@@ -40,7 +40,8 @@ CREATE TABLE `admindata` (
 
 INSERT INTO `admindata` (`id`, `campus`, `email`) VALUES
 (1, 'BBSR', 'chinmayakumarbiswal45@gmail.com'),
-(2, 'BBSR', 'situ@chinmayakumarbiswal.in');
+(2, 'BBSR', 'situ@chinmayakumarbiswal.in'),
+(3, 'Vizianagaram', 'situchinmaya@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -58,8 +59,13 @@ CREATE TABLE `campus` (
 --
 
 INSERT INTO `campus` (`id`, `name`) VALUES
-(1, 'BBSR'),
-(2, 'Balasore');
+(1, 'Paralakhemundi'),
+(2, 'BBSR'),
+(3, 'Balangir'),
+(4, 'Rayagada'),
+(5, 'Balasore'),
+(6, 'Chatrapur'),
+(7, 'Vizianagaram');
 
 -- --------------------------------------------------------
 
@@ -100,7 +106,8 @@ CREATE TABLE `userdata` (
 --
 
 INSERT INTO `userdata` (`id`, `name`, `email`, `campus`) VALUES
-(1, 'Chinmaya', '210720100009@cutm.ac.in', 'BBSR');
+(1, 'Chinmaya', '210720100009@cutm.ac.in', 'BBSR'),
+(2, 'situ', 'situ@chinmayakumarbiswal.in', 'Paralakhemundi');
 
 -- --------------------------------------------------------
 
@@ -138,7 +145,8 @@ INSERT INTO `visitordata` (`id`, `visitingID`, `nameOfVisit`, `org`, `date`, `no
 (7, 'BBSR196527', 'Chinmaya Kumar Biswal', 'Balugaon', '2023-01-29', '6370183009', '1', '1', 'Chinmaya1', '210720100009@cutm.ac.in', 'BBSR', 'Gate 1', 'Balasore28795163d4f0694d312.png'),
 (8, 'BBSR286053', 'situ', 'Balugaon', '2023-01-29', '9556328216', '01', 'meet', 'Chinmaya', '210720100009@cutm.ac.in', 'BBSR', 'Gate 1', 'images.png'),
 (9, 'BBSR240967', 'Chinmaya Kumar Biswal', 'Hatabaradihi,Gainada,Balugaon,752027', '2023-01-29', '6370183009', 'test', 'test', 'NN Das', 'chinmayakumarbiswal45@gmail.com', 'Balasore', 'Gate 1', 'images.png'),
-(10, 'BBSR107824', 'Chinmaya Kumar Biswal', 'Balugaon', '2023-01-29', '6370183009', 'Situ', 'meet', 'Chinmaya Kumar Biswal', 'chinmayakumarbiswal45@gmail.com', 'Balasore', 'Gate 1', 'BBSR58073263d6a86c87fd0.png');
+(10, 'BBSR107824', 'Chinmaya Kumar Biswal', 'Balugaon', '2023-01-29', '6370183009', 'Situ', 'meet', 'Chinmaya Kumar Biswal', 'chinmayakumarbiswal45@gmail.com', 'Balasore', 'Gate 1', 'BBSR58073263d6a86c87fd0.png'),
+(11, 'BBSR547219', 'Balabhadra Biswal', 'Chilika', '2023-01-31', '7894820031', 'OD02c0101', 'meet', 'Chinmaya Kumar Biswal', '210720100009@cutm.ac.in', 'BBSR', 'Gate 1', 'BBSR50861463d9518a7229b.png');
 
 --
 -- Indexes for dumped tables
@@ -182,31 +190,31 @@ ALTER TABLE `visitordata`
 -- AUTO_INCREMENT for table `admindata`
 --
 ALTER TABLE `admindata`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `campus`
 --
 ALTER TABLE `campus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `gate`
 --
 ALTER TABLE `gate`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `userdata`
 --
 ALTER TABLE `userdata`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `visitordata`
 --
 ALTER TABLE `visitordata`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

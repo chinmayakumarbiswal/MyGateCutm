@@ -30,7 +30,7 @@
         $picture=$getInfoFromGoogle['picture'];
         echo $picture;
 
-        $query="SELECT * FROM userdata WHERE email='$email'";
+        $query="SELECT * FROM employee WHERE email='$email'";
         $runQuery=mysqli_query($db,$query);
         $totalRows=mysqli_num_rows($runQuery);
         if($totalRows >=1){
@@ -38,9 +38,22 @@
             $_SESSION['name']=$name;
             $_SESSION['image']=$picture;
             $_SESSION['token']=$token;
+            $_SESSION['userType']="employee";
             header('location:./user/user.php');
         }else {
-            echo "<script>alert('You are not a valid user.');</script>";
+            $query="SELECT * FROM studentData WHERE email='$email'";
+            $runQuery=mysqli_query($db,$query);
+            $totalRows=mysqli_num_rows($runQuery);
+            if($totalRows >=1){
+                $_SESSION['email']=$email;
+                $_SESSION['name']=$name;
+                $_SESSION['image']=$picture;
+                $_SESSION['token']=$token;
+                $_SESSION['userType']="student";
+                header('location:./user/user.php');
+            }else {
+                echo "<script>alert('You are not a valid user.');</script>";
+            }
         }
     }else {
         

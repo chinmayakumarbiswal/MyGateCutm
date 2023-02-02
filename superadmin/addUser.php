@@ -17,7 +17,7 @@ if(isset($_POST['addStudent'])){
   $campus=mysqli_real_escape_string($db,$_POST['campus']);
   
 
-  $query="INSERT INTO userdata(name,email,campus) VALUES('$name','$email','$campus')";
+  $query="INSERT INTO studentdata(name,email,campus) VALUES('$name','$email','$campus')";
   $run=mysqli_query($db,$query) or die(mysqli_error($db));
   if ($run) {
     echo "<script>alert('User added Successfully.');</script>";
