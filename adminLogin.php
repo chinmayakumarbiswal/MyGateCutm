@@ -99,7 +99,7 @@
                                     </div>
                                     <br>
 
-                                    <p class="text-inverse text-center">Student Login
+                                    <p class="text-inverse text-center">Student/Employee Login
                                         <a href="./index.php" data-abc="true">Login</a>
                                     </p>
                                     <p class="text-inverse text-center">Gate Login

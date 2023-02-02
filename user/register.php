@@ -41,8 +41,14 @@ if(isset($_POST['register'])){
   $query="INSERT INTO visitordata (visitingID,nameOfVisit,org,date,no,vehicleno,purpose,meetingName,registerEmail,campus,gate,photos) VALUES('$visitingID','$nameOfVisit','$org','$date','$number','$vehicle','$purpose','$name','$email','$campus',' ','images.png')";
   $run=mysqli_query($db,$query) or die(mysqli_error($db));
   if ($run) {
-    $msg="Hello ".$meetingName."someone came to campus to visiting you. you can use this ".$visitingID." as your visiting id";
-    $isMailSend=smtp_mailer($email,'Forgot password',$msg);
+    $msg="<html>
+            <body>
+                <p>Hello ".$name.", ".$nameOfVisit." came to campus to meet you</p>
+                <p>You can use <b>".$visitingID."</b> as visiting ID for date ".$date." </p>
+                
+            </body>
+          </html>";
+    $isMailSend=smtp_mailer($email,'Visiting Details Registration',$msg);
 
     if ($isMailSend == "Sent") {
       echo "<script>alert('You Successfully submit your visiting details.');</script>";
@@ -227,7 +233,7 @@ if(isset($_POST['register'])){
                                     <label for="inputText" class="col-sm-2 col-form-label">Meeting Person Name</label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" name="name"
-                                            value="<?=$userdata['name']?>">
+                                            value="<?=$name?>">
                                     </div>
                                 </div>
 
