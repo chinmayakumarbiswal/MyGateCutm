@@ -1,7 +1,7 @@
 <?php
 require('../include/database.php');
 require('../include/function.php');
-
+require('../mailer.php');
 
 if(isset($_POST['registerEntry'])){
     $attendanceId=mysqli_real_escape_string($db,$_POST['attendanceId']);
@@ -15,19 +15,27 @@ if(isset($_POST['registerEntry'])){
     echo $date;
     echo $enterTime;
     echo $outTime;
-  
+
+    $allEmployee=getEmployeeDetailsById($db,$empIdEntry);
+    $getEName=$allEmployee['name'];
+    $getEemail=$allEmployee['email'];
+
     if ($attendanceId == '') {
         $query="INSERT INTO entryrigister (empId,date,inTime,outTime) VALUES('$empIdEntry','$date','$enterTime','$outTime')";
         $run=mysqli_query($db,$query) or die(mysqli_error($db));
         
         if ($run) {
-          echo "<script>alert('Welcome to Cutm');window.location.href = './employeeEntry.php';</script>";
+            $msg="Hello ".$getEName." Welcome to CUTM. You Entered to Campus on ".$date." at ".$enterTime;
+            $isMailSend=smtp_mailer($getEemail,'Welcome to Cutm',$msg);
+            echo "<script>alert('Welcome to Cutm');window.location.href = './employeeEntry.php';</script>";
         }
     }else {
         $query="UPDATE entryrigister SET `outTime`='$outTime' WHERE id='$attendanceId'";
         $run=mysqli_query($db,$query) or die(mysqli_error($db));
         
         if ($run) {
+            $msg="Hello ".$getEName." Thank You for Visiting CUTM. You Entered to Campus on ".$date." at ".$enterTime." and come back from campus at ".$outTime;
+            $isMailSend=smtp_mailer($getEemail,'Thank You for Visiting CUTM',$msg);
             echo "<script>alert('Thank You Bye');window.location.href = './employeeEntry.php';</script>";
         }
     }
