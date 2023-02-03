@@ -142,6 +142,12 @@ if(isset($_POST['find'])){
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link " href="./addEmployee.php">
+            <i class="ri ri-user-add-line"></i>
+            <span>Add Employee</span>
+        </a>
+    </li>
+      <li class="nav-item">
         <a class="nav-link " href="./addGate.php">
             <i class="bx bxs-door-open"></i>
             <span>Add Gate User</span>
