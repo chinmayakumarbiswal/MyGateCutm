@@ -200,4 +200,29 @@
         }
         return $data;
     }
+
+    function getAllEmployeeId($db,$campusIs){
+        $query="SELECT * FROM employee WHERE campus='$campusIs' GROUP BY empId";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
+
+    function getEmployeeDetailsById($db,$empId){
+        $query="SELECT * FROM employee WHERE empId='$empId'";
+        $run=mysqli_query($db,$query);
+        $data=mysqli_fetch_assoc($run);
+        return $data;
+    }
+
+    function getEmployeeAttendance($db,$empIdEntry,$toDayDateIs){
+        $query="SELECT * FROM entryrigister WHERE empId='$empIdEntry' AND date='$toDayDateIs' ORDER BY id DESC";
+        $run=mysqli_query($db,$query);
+        $data=mysqli_fetch_assoc($run);
+        return $data;
+    }
+
 ?>

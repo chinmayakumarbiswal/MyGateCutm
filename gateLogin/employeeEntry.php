@@ -9,30 +9,56 @@ if($_SESSION['userType']=="gate")
   $getGateUserData=getGateUserDetails($db,$userEmail);
   date_default_timezone_set("Asia/Kolkata");
   $toDayDateIs=date("Y-m-d");
+  $timeIs=date("h:i");
   echo $toDayDateIs;
+  echo $timeIs;
 }
 else {
   header('location:../include/logout.php');
 }
 
 if(isset($_POST['find'])){
-  $visitingNo=mysqli_real_escape_string($db,$_POST['visitingNo']);
-  $nameOfVisit=mysqli_real_escape_string($db,$_POST['nameOfVisit']);
-
-  if ($visitingNo) {
-    $getDataForTable=getAllDetaildInGateWithVigitNo($db,$getGateUserData['campus'],$toDayDateIs,$visitingNo);  
-  }else if ($nameOfVisit) {
-    echo $nameOfVisit;
-    echo $getGateUserData['campus'];
-    echo $toDayDateIs;
+  $empId=mysqli_real_escape_string($db,$_POST['empId']);
+  if ($empId) {
+    $allEmployee=getEmployeeDetailsById($db,$empId);
+    $empid=$allEmployee['empId'];
+    $empName=$allEmployee['name'];
+    $inTime="";
+    $outTime="";
+    $image=$allEmployee['image'];
     
-    $getDataForTable=getAllDetaildInGateWithName($db,$getGateUserData['campus'],$toDayDateIs,$nameOfVisit);
-  }else{
-    $getDataForTable=getAllDetaildInGate($db,$getGateUserData['campus'],$toDayDateIs);   
+
+    $query="SELECT * FROM entryrigister WHERE empId='$empId' AND date='$toDayDateIs'";
+    $runQuery=mysqli_query($db,$query);
+    $totalRows=mysqli_num_rows($runQuery);
+    if($totalRows >=1){
+      $getAttendance=getEmployeeAttendance($db,$empId,$toDayDateIs);
+      $attendanceId=$getAttendance['id'];
+      $inTime=$getAttendance['inTime'];
+      $outTime=$timeIs;
+      if ($getAttendance['outTime'] !='') {
+        $inTime=$timeIs;
+        $outTime='';
+        $attendanceId="";
+      }
+    }else {
+      $inTime=$timeIs;
+      $attendanceId="";
+    }
   }
-}else{
-  $getDataForTable=getAllDetaildInGate($db,$getGateUserData['campus'],$toDayDateIs);   
+
+}else {
+  $empid="";
+  $empName="";
+  $inTime="";
+  $outTime="";
+  $image="images.png";
+  $attendanceId="";
 }
+
+
+
+
 
 ?>
 
@@ -174,39 +200,24 @@ if(isset($_POST['find'])){
               <!-- General Form Elements -->
               <form action="" method="post" enctype="multipart/form-data">
                 <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Visiting Number</label>
+                  <label for="inputText" class="col-sm-2 col-form-label">Employee Id</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="visitingNo" list="visitingNoList" value="">
-                    <datalist id="visitingNoList">
+                    <input type="text" class="form-control" name="empId" list="empId" value="" required>
+                    <datalist id="empId">
                       <?php    
-                        $getVisitorId=getAllVisitorId($db,$toDayDateIs,$getGateUserData['campus']);
-                        foreach($getVisitorId as $getVisitorIds){
+                        $getEmpId=getAllEmployeeId($db,$getGateUserData['campus']);
+                        foreach($getEmpId as $getEmpIds){
                       ?>
-                        <option value="<?=$getVisitorIds['visitingID']?>"><?=$getVisitorIds['visitingID']?></option>
+                        <option value="<?=$getEmpIds['empId']?>"><?=$getEmpIds['empId']?></option>
                       <?php    
                         }
                       ?>
                     </datalist>
                   </div>
                 </div>
+                
                 <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Name of Visitor</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" name="nameOfVisit" list="visitingNameList" value="">
-                    <datalist id="visitingNameList">
-                      <?php    
-                        $getVisitorName=getAllVisitorName($db,$toDayDateIs,$getGateUserData['campus']);
-                        foreach($getVisitorName as $getVisitorNames){
-                      ?>
-                        <option value="<?=$getVisitorNames['nameOfVisit']?>"><?=$getVisitorNames['nameOfVisit']?></option>
-                      <?php    
-                        }
-                      ?>
-                    </datalist>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Search List</label>
+                  <label class="col-sm-2 col-form-label">Find Employee</label>
                   <div class="col-sm-10">
                     <button type="submit" class="btn btn-primary" name="find">Find</button>
                   </div>
@@ -222,61 +233,77 @@ if(isset($_POST['find'])){
     <section class="section dashboard">
       <div class="row">
 
-        <!-- Left side columns -->
+       
         <div class="col-lg-12">
           <div class="row">
 
 
-            <!-- Recent Sales -->
-            <div class="col-12">
+            
+            <div class="col-lg-6">
               <div class="card recent-sales overflow-auto">
                 <div class="card-body">
-                  <h5 class="card-title">Applied Student</h5>
+                  <h5 class="card-title">Employee Details</h5>
 
-                  <table class="table table-borderless datatable">
-                  <thead>
-                      <tr>
-                      <th scope="col">Visiting ID</th>
-                        <th scope="col">Name Of Visitor</th>
-                        <th scope="col">Comming From</th>
-                        <th scope="col">Date of Visiting</th>
-                        <th scope="col">Mobile</th>
-                        <th scope="col">Vehicle Number</th>
-                        <th scope="col">Purpose</th>
-                        <th scope="col">Meeting Name</th>
-                        <th scope="col">Register By</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Verify</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php     
-                        foreach($getDataForTable as $getDataForTables){
-                      ?>
-                      <tr>
-                        <td><?=$getDataForTables['visitingID']?></td>
-                        <td><?=$getDataForTables['nameOfVisit']?></td>
-                        <td><?=$getDataForTables['org']?></td>
-                        <td><?=$getDataForTables['date']?></td>
-                        <td><?=$getDataForTables['no']?></td>
-                        <td><?=$getDataForTables['vehicleno']?></td>
-                        <td><?=$getDataForTables['purpose']?></td>
-                        <td><?=$getDataForTables['meetingName']?></td>
-                        <td><?=$getDataForTables['registerEmail']?></td>
-                        <td><img class="img-fluid" src="../userImage/<?=$getDataForTables['photos']?>" alt="" height="50px" width="50px"></td>
-                        <td>
-                          <button type="button" class="btn btn-outline-warning btn-icon-text" onclick="location.href='./verify.php?registerId=<?=$getDataForTables['id']?>&visitingId=<?=$getDataForTables['visitingID']?>';">
-                            Verify Visitor
-                          </button>
-                        </tr>
-                      <?php
-                        }
-                      ?>
-                    </tbody>
-                  </table>
+                  <form action="./registerEntry.php" method="post">
+                    <input type="hidden" name="attendanceId" value="<?=$attendanceId?>" >
 
+
+                    <div class="row mb-3">
+                      <label for="inputText" class="col-sm-4 col-form-label">Employee Id</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" name="EntempId" value="<?=$empid?>" readonly >
+                      </div>
+                    </div> 
+                    
+                    <div class="row mb-3">
+                      <label for="inputText" class="col-sm-4 col-form-label">Name of Employee</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" name="EntempName" value="<?=$empName?>" readonly >
+                      </div>
+                    </div> 
+
+                    <div class="row mb-3">
+                      <label for="inputText" class="col-sm-4 col-form-label">Date</label>
+                      <div class="col-sm-8">
+                        <input type="date" class="form-control" name="Enttoday" value="<?=$toDayDateIs?>" readonly >
+                      </div>
+                    </div> 
+
+                    <div class="row mb-3">
+                      <label for="inputText" class="col-sm-4 col-form-label">In Time</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" name="EntInTime" value="<?=$inTime?>" readonly>
+                      </div>
+                    </div> 
+
+                    <div class="row mb-3">
+                      <label for="inputText" class="col-sm-4 col-form-label">Out Time</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" name="EntOutTime" value="<?=$outTime?>" readonly>
+                      </div>
+                    </div> 
+
+                    <div class="row mb-3">
+                      <label class="col-sm-4 col-form-label">Submit Data</label>
+                      <div class="col-sm-8">
+                        <button type="submit" class="btn btn-primary" name="registerEntry">Submit</button>
+                      </div>
+                    </div>
+
+
+                  </form>
                 </div>
+              </div>
+            </div>
 
+
+
+            <div class="col-lg-6">
+              <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                  <h5 class="card-title">Employee Image</h5>
+                  <img class="img-fluid" src="../userImage/<?=$image?>" alt="searching image" height="auto" width="100%">
+                </div>
               </div>
             </div>
 
@@ -317,68 +344,7 @@ if(isset($_POST['find'])){
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
 
-  <script>
-    function getheading() {
-      document.getElementById('heading').disabled = true
-      axios.get("../include/getheading.php").then((response) => {
-        console.log(response);
-        let options = '<option value="">Select one option</option>';
-        for (let each of response.data.data) {
-          options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('heading').innerHTML = options;
-        document.getElementById('heading').disabled = false;
-      })
-    }
-
-    function getTechExpert() {
-      let selection = document.getElementById('heading').value;
-      if (!selection) return;
-      document.getElementById('techIn').disabled = true
-      document.getElementById('techIn').innerHTML = '<option value="">Loading</option>';
-      axios.get("../include/gettech.php?heading=" + selection).then((response) => {
-        console.log(response);
-        let options = '';
-        for (let each of response.data.data) {
-            options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('techIn').innerHTML = options;
-        document.getElementById('techIn').disabled = false;
-      })
-    }
-
-    getheading();
   
-  function getSchool() {
-      document.getElementById('school').disabled = true
-      axios.get("../include/getSchool.php").then((response) => {
-        console.log(response);
-        let options = '<option value="All">All</option>';
-        for (let each of response.data.data) {
-          options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('school').innerHTML = options;
-        document.getElementById('school').disabled = false;
-      })
-    }
-
-    function getDept() {
-      let selection = document.getElementById('school').value;
-      if (!selection) return;
-      document.getElementById('dept').disabled = true
-      document.getElementById('dept').innerHTML = '<option value="">Loading</option>';
-      axios.get("../include/getDept.php?school=" + selection).then((response) => {
-        console.log(response);
-        let options = '<option value="All">All</option>';
-        for (let each of response.data.data) {
-            options += `<option value="${each}">${each}</option>`;
-        }
-        document.getElementById('dept').innerHTML = options;
-        document.getElementById('dept').disabled = false;
-      })
-    }
-    getSchool()
-  </script>
 
 </body>
 

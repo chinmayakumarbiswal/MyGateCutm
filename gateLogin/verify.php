@@ -258,6 +258,13 @@ if(isset($_POST['register'])){
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="./allReport.php">
+          <i class="bi bi-door-open"></i>
+          <span>Employee Entry</span>
+        </a>
+      </li>
+
     </ul>
 
   </aside><!-- End Sidebar-->
