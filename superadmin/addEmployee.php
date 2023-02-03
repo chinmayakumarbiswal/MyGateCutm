@@ -11,13 +11,14 @@ else {
   header('location:../include/logout.php');
 }
 
-if(isset($_POST['addStudent'])){
-  $name=mysqli_real_escape_string($db,$_POST['name']);
-  $email=mysqli_real_escape_string($db,$_POST['email']);
-  $campus=mysqli_real_escape_string($db,$_POST['campus']);
+if(isset($_POST['addEmployee'])){
+  $empId=mysqli_real_escape_string($db,$_POST['empId']);
+  $ename=mysqli_real_escape_string($db,$_POST['name']);
+  $eemail=mysqli_real_escape_string($db,$_POST['email']);
+  $ecampus=mysqli_real_escape_string($db,$_POST['campus']);
   
 
-  $query="INSERT INTO studentdata(name,email,campus) VALUES('$name','$email','$campus')";
+  $query="INSERT INTO employee(empId,name,email,campus,image) VALUES('$empId','$ename','$eemail','$ecampus','images.png')";
   $run=mysqli_query($db,$query) or die(mysqli_error($db));
   if ($run) {
     echo "<script>alert('User added Successfully.');</script>";
@@ -41,12 +42,13 @@ if(isset($_POST['importExcel'])){
 		foreach($obj->getWorksheetIterator() as $sheet){
 			$getHighestRow=$sheet->getHighestRow();
 			for($i=2;$i<=$getHighestRow;$i++){
-				$name=$sheet->getCellByColumnAndRow(0,$i)->getValue();
-        $email=$sheet->getCellByColumnAndRow(1,$i)->getValue();
-        $campus=$sheet->getCellByColumnAndRow(2,$i)->getValue();
+        $empId=$sheet->getCellByColumnAndRow(0,$i)->getValue();
+				$ename=$sheet->getCellByColumnAndRow(1,$i)->getValue();
+        $eemail=$sheet->getCellByColumnAndRow(2,$i)->getValue();
+        $ecampus=$sheet->getCellByColumnAndRow(3,$i)->getValue();
                 
-				if($name!=''){
-					$query="INSERT INTO userdata(name,email,campus) VALUES('$name','$email','$campus')";
+				if($ename!=''){
+					$query="INSERT INTO employee(empId,name,email,campus,image) VALUES('$empId','$ename','$eemail','$ecampus','images.png')";
           $run=mysqli_query($db,$query) or die(mysqli_error($db));
                     
 				}
@@ -59,7 +61,7 @@ if(isset($_POST['importExcel'])){
 	}
 }
 
-$getDataForTable=getAllUserByAdminForList($db); 
+$getDataForTable=getAllEmployeeByAdminForList($db); 
 
 
 ?>
@@ -104,7 +106,7 @@ $getDataForTable=getAllUserByAdminForList($db);
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Please upload your <a href="./PHPExcel/test.xlsx">excel in this format</a></h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Please upload your <a href="./PHPExcel/employeeData.xlsx">excel in this format</a></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -197,11 +199,17 @@ $getDataForTable=getAllUserByAdminForList($db);
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link " href="./addUser.php">
+            <i class="ri ri-user-add-line"></i>
+            <span>Add Employee</span>
+        </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link " href="./addGate.php">
             <i class="bx bxs-door-open"></i>
             <span>Add Gate User</span>
         </a>
-      </li>
+    </li>
 
   </ul>
 
@@ -225,19 +233,26 @@ $getDataForTable=getAllUserByAdminForList($db);
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Add Students</h5>
+              <h5 class="card-title">Add Employee</h5>
 
               <!-- General Form Elements -->
               <form action="" method="post">
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Name of Student</label>
+                  <label class="col-sm-2 col-form-label">Employee Id</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="empId" required>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Name of Employee</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="name" required>
                   </div>
                 </div>
                 
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Email</label>
+                  <label class="col-sm-2 col-form-label">Email of Employee</label>
                   <div class="col-sm-10">
                     <input type="email" class="form-control" name="email" required>
                   </div>
@@ -263,8 +278,8 @@ $getDataForTable=getAllUserByAdminForList($db);
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">Add User</label>
                   <div class="col-sm-10">
-                    <button type="submit" class="btn btn-primary" name="addStudent">Add Individual Data</button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importExcel">Import User Data from Excel</button>
+                    <button type="submit" class="btn btn-primary" name="addEmployee">Add Individual Data</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importExcel">Import Employee Data from Excel</button>
                   </div>
                 </div>
 
@@ -292,6 +307,7 @@ $getDataForTable=getAllUserByAdminForList($db);
                   <table class="table">
                     <thead>
                       <tr>
+                        <th scope="col">Emp Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Campus</th>
@@ -302,6 +318,7 @@ $getDataForTable=getAllUserByAdminForList($db);
                         foreach($getDataForTable as $getDataForTables){
                       ?>
                       <tr class="table-primary">
+                      <td><?=$getDataForTables['empId']?></td>
                         <td><?=$getDataForTables['name']?></td>
                         <td><?=$getDataForTables['email']?></td>
                         <td><?=$getDataForTables['campus']?></td>
