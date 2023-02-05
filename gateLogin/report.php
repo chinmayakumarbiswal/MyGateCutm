@@ -140,7 +140,7 @@ if(isset($_POST['find'])){
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="./allReport.php">
+        <a class="nav-link collapsed" href="./employeeEntry.php">
           <i class="bi bi-door-open"></i>
           <span>Employee Entry</span>
         </a>

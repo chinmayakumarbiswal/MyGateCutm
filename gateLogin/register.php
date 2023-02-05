@@ -262,7 +262,7 @@ if(isset($_POST['register'])){
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="./allReport.php">
+        <a class="nav-link collapsed" href="./employeeEntry.php">
           <i class="bi bi-door-open"></i>
           <span>Employee Entry</span>
         </a>
@@ -333,7 +333,17 @@ if(isset($_POST['register'])){
                 <div class="row mb-3">
                   <label for="inputText" class="col-sm-2 col-form-label">Meeting Person Name/Email</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="name" value="" required>
+                    <input type="text" class="form-control" name="name" list="userName" value="" required>
+                    <datalist id="userName">
+                      <?php    
+                        $getEmpId=getAllEmployeeAndStudentId($db,$getGateUserData['campus']);
+                        foreach($getEmpId as $getEmpIds){
+                      ?>
+                        <option value="<?=$getEmpIds['email']?>"><?=$getEmpIds['name']?> - <?=$getEmpIds['dept']?> - <?=$getEmpIds['email']?></option>
+                      <?php    
+                        }
+                      ?>
+                    </datalist>
                   </div>
                 </div>
                 

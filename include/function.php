@@ -235,4 +235,14 @@
         return $data;
     }
 
+    function getAllEmployeeAndStudentId($db,$campusIs){
+        $query="SELECT name, email,dept FROM employee UNION ALL SELECT name, email,dept FROM studentdata WHERE campus='$campusIs'";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
+
 ?>
