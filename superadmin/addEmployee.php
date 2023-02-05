@@ -15,10 +15,11 @@ if(isset($_POST['addEmployee'])){
   $empId=mysqli_real_escape_string($db,$_POST['empId']);
   $ename=mysqli_real_escape_string($db,$_POST['name']);
   $eemail=mysqli_real_escape_string($db,$_POST['email']);
+  $edept=mysqli_real_escape_string($db,$_POST['dept']);
   $ecampus=mysqli_real_escape_string($db,$_POST['campus']);
   
 
-  $query="INSERT INTO employee(empId,name,email,campus,image) VALUES('$empId','$ename','$eemail','$ecampus','images.png')";
+  $query="INSERT INTO employee(empId,name,email,dept,campus,image) VALUES('$empId','$ename','$eemail','$edept','$ecampus','images.png')";
   $run=mysqli_query($db,$query) or die(mysqli_error($db));
   if ($run) {
     echo "<script>alert('User added Successfully.');</script>";
@@ -45,10 +46,11 @@ if(isset($_POST['importExcel'])){
         $empId=$sheet->getCellByColumnAndRow(0,$i)->getValue();
 				$ename=$sheet->getCellByColumnAndRow(1,$i)->getValue();
         $eemail=$sheet->getCellByColumnAndRow(2,$i)->getValue();
-        $ecampus=$sheet->getCellByColumnAndRow(3,$i)->getValue();
+        $edept=$sheet->getCellByColumnAndRow(3,$i)->getValue();
+        $ecampus=$sheet->getCellByColumnAndRow(4,$i)->getValue();
                 
 				if($ename!=''){
-					$query="INSERT INTO employee(empId,name,email,campus,image) VALUES('$empId','$ename','$eemail','$ecampus','images.png')";
+					$query="INSERT INTO employee(empId,name,email,dept,campus,image) VALUES('$empId','$ename','$eemail','$edept','$ecampus','images.png')";
           $run=mysqli_query($db,$query) or die(mysqli_error($db));
                     
 				}
@@ -257,6 +259,14 @@ $getDataForTable=getAllEmployeeByAdminForList($db);
                     <input type="email" class="form-control" name="email" required>
                   </div>
                 </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Role of Employee</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="dept" required>
+                  </div>
+                </div>
+                
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">Campus</label>
                   <div class="col-sm-10">
