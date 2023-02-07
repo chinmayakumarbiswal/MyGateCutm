@@ -11,7 +11,7 @@ if($_SESSION['userType']=="gate")
   date_default_timezone_set("Asia/Kolkata");
   $toDayDateIs=date("Y-m-d");
   $timeIs=date("h:i A");
-  echo $timeIs;
+  // echo $timeIs;
 }
 else {
   header('location:../include/logout.php');
@@ -316,7 +316,7 @@ if(isset($_POST['register'])){
                 <div class="row mb-3">
                   <label for="inputText" class="col-sm-2 col-form-label">Time of Visiting</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="date" value="<?=$timeIs?>" readonly>
+                    <input type="text" class="form-control" name="" value="<?=$timeIs?>" readonly>
                   </div>
                 </div>
                 <div class="row mb-3">
@@ -451,6 +451,9 @@ if(isset($_POST['register'])){
         height: 300,
         image_format: "jpeg",
         jpeg_quality: 90,
+    	constraints: {
+   			facingMode: 'environment'
+ 		}
       });
  
       Webcam.attach("#my_camera");
