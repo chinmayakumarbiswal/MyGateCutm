@@ -14,10 +14,11 @@ else {
 if(isset($_POST['addStudent'])){
   $name=mysqli_real_escape_string($db,$_POST['name']);
   $email=mysqli_real_escape_string($db,$_POST['email']);
+  $dept=mysqli_real_escape_string($db,$_POST['dept']);
   $campus=mysqli_real_escape_string($db,$_POST['campus']);
   
 
-  $query="INSERT INTO studentdata(name,email,campus) VALUES('$name','$email','$campus')";
+  $query="INSERT INTO studentdata(name,email,dept,campus) VALUES('$name','$email','$dept','$campus')";
   $run=mysqli_query($db,$query) or die(mysqli_error($db));
   if ($run) {
     echo "<script>alert('User added Successfully.');</script>";
@@ -43,10 +44,11 @@ if(isset($_POST['importExcel'])){
 			for($i=2;$i<=$getHighestRow;$i++){
 				$name=$sheet->getCellByColumnAndRow(0,$i)->getValue();
         $email=$sheet->getCellByColumnAndRow(1,$i)->getValue();
-        $campus=$sheet->getCellByColumnAndRow(2,$i)->getValue();
+        $dept=$sheet->getCellByColumnAndRow(2,$i)->getValue();
+        $campus=$sheet->getCellByColumnAndRow(3,$i)->getValue();
                 
 				if($name!=''){
-					$query="INSERT INTO userdata(name,email,campus) VALUES('$name','$email','$campus')";
+					$query="INSERT INTO studentdata(name,email,dept,campus) VALUES('$name','$email','$dept','$campus')";
           $run=mysqli_query($db,$query) or die(mysqli_error($db));
                     
 				}
@@ -248,6 +250,14 @@ $getDataForTable=getAllUserByAdminForList($db);
                     <input type="email" class="form-control" name="email" required>
                   </div>
                 </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Dept of Student</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="dept" required>
+                  </div>
+                </div>
+
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">Campus</label>
                   <div class="col-sm-10">

@@ -15,7 +15,7 @@
     }
 
     function getUserDetails($db,$email){
-        $query="SELECT * FROM studentData WHERE email='$email'";
+        $query="SELECT * FROM studentdata WHERE email='$email'";
         $run=mysqli_query($db,$query);
         $data=mysqli_fetch_assoc($run);
         return $data;
@@ -183,7 +183,7 @@
     }
 
     function getAllUserByAdminForList($db){
-        $query="SELECT * FROM studentData ORDER BY id DESC";
+        $query="SELECT * FROM studentdata ORDER BY id DESC";
         $run=mysqli_query($db,$query);
         $data=array();
         while($d=mysqli_fetch_assoc($run)){

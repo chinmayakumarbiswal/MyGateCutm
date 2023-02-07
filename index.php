@@ -41,7 +41,7 @@
             $_SESSION['userType']="employee";
             header('location:./user/user.php');
         }else {
-            $query="SELECT * FROM studentData WHERE email='$email'";
+            $query="SELECT * FROM studentdata WHERE email='$email'";
             $runQuery=mysqli_query($db,$query);
             $totalRows=mysqli_num_rows($runQuery);
             if($totalRows >=1){

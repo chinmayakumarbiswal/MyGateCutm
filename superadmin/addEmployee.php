@@ -320,6 +320,7 @@ $getDataForTable=getAllEmployeeByAdminForList($db);
                         <th scope="col">Emp Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Role</th>
                         <th scope="col">Campus</th>
                       </tr>
                     </thead>
@@ -331,6 +332,7 @@ $getDataForTable=getAllEmployeeByAdminForList($db);
                       <td><?=$getDataForTables['empId']?></td>
                         <td><?=$getDataForTables['name']?></td>
                         <td><?=$getDataForTables['email']?></td>
+                        <td><?=$getDataForTables['dept']?></td>
                         <td><?=$getDataForTables['campus']?></td>
                       </tr>
                       <?php    
