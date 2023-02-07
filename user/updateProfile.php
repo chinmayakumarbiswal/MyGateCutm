@@ -9,65 +9,39 @@ if($_SESSION['email'])
   $name=$_SESSION['name'];
   $picture=$_SESSION['image'];
   $userType=$_SESSION['userType'];
-  if ($userType == "employee") {
+  if($userType == "employee"){
     $userProfileUpdate='<li>
-        <a class="dropdown-item d-flex align-items-center" href="./updateProfile.php">
-        <i class="bi bi-card-image"></i>
-        <span>Update Profile</span>
-        </a>
-    </li>';
-    $userdata=getEmployeeDetails($db,$userEmail);
-  }elseif ($userType == "student") {
-    $userProfileUpdate='';
-    $userdata=getUserDetails($db,$userEmail);
+    <a class="dropdown-item d-flex align-items-center" href="./updateProfile.php">
+      <i class="bi bi-card-image"></i>
+      <span>Update Profile</span>
+    </a>
+  </li>';
+  
   }else {
     $userProfileUpdate='';
-    header('location:../include/logout.php');
+    echo "<script>alert('You are not a valid user .');window.location.href = './user.php';</script>";
   }
 }
 else {
   header('location:../include/logout.php');
 }
 
-if(isset($_POST['register'])){
-  $nameOfVisit=mysqli_real_escape_string($db,$_POST['nameOfVisit']);
-  $org=mysqli_real_escape_string($db,$_POST['org']);
-  $date=mysqli_real_escape_string($db,$_POST['date']);
-  $number=mysqli_real_escape_string($db,$_POST['number']);
-  $campus=mysqli_real_escape_string($db,$_POST['campus']);
-  $vehicle=mysqli_real_escape_string($db,$_POST['vehicle']);
-  $purpose=mysqli_real_escape_string($db,$_POST['purpose']);
-  $name=mysqli_real_escape_string($db,$_POST['name']);
-  $email=mysqli_real_escape_string($db,$_POST['email']);
-  $campus=mysqli_real_escape_string($db,$_POST['campus']);
+if(isset($_POST['update'])){
+    $image_name=$_FILES['image']['name'];
+    $image_tmp=$_FILES['image']['tmp_name'];
+    $filename=randPass().date('d-m-Y-H-i').$image_name;
   
-
-  $visitingID=$campus.randPass();
-
-  $query="INSERT INTO visitordata (visitingID,nameOfVisit,org,date,no,vehicleno,purpose,meetingName,registerEmail,campus,gate,photos) VALUES('$visitingID','$nameOfVisit','$org','$date','$number','$vehicle','$purpose','$name','$email','$campus',' ','images.png')";
-  $run=mysqli_query($db,$query) or die(mysqli_error($db));
-  if ($run) {
-    $msg="<html>
-            <body>
-                <p>Hello ".$name.", ".$nameOfVisit." came to campus to meet you</p>
-                <p>You can use <b>".$visitingID."</b> as visiting ID for date ".$date." </p>
-                
-            </body>
-          </html>";
-    $isMailSend=smtp_mailer($email,'Visiting Details Registration',$msg);
-
-    if ($isMailSend == "Sent") {
-      echo "<script>alert('You Successfully submit your visiting details.');</script>";
-      header('location:./user.php');
+    if(move_uploaded_file($image_tmp,"../userImage/$filename")){
+        $query="UPDATE `employee` SET `image`='$filename' WHERE email='$userEmail'";
+        $run=mysqli_query($db,$query);
+        if($run){
+            echo "<script>alert('You profile image updated but it only visible for gate user.');</script>";
+        }else {
+            echo "<script>alert('update error.');</script>";
+        }
     }else {
-      echo"<script>alert('We are sorry somthing wrong in my mailer!');</script>";
+        echo "<script>alert('unable to update profile image.');</script>";
     }
-    
-  }else {
-    echo "<script>alert('Sorry Somthing wrong.');</script>";
-  }
-  
-
 }
 
 
@@ -167,7 +141,7 @@ if(isset($_POST['register'])){
             </li><!-- End Dashboard Nav -->
 
             <li class="nav-item">
-                <a class="nav-link" href="./register.php">
+                <a class="nav-link collapsed" href="./register.php">
                     <i class="bi bi-file-earmark"></i>
                     <span>Register</span>
                 </a>
@@ -200,79 +174,18 @@ if(isset($_POST['register'])){
                             <!-- General Form Elements -->
                             <form action="" method="post" enctype="multipart/form-data">
                                 <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Name of Visitor</label>
+                                    <label for="inputText" class="col-sm-2 col-form-label">Upload Profile Photos</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="nameOfVisit" value="">
+                                        <input type="file" class="form-control" name="image" value="">
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Organization /
-                                        Address</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="org" value="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Date of Visiting</label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" name="date" value="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">Contact Number</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" class="form-control" name="number" required>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Vehicle Number</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="vehicle" value="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Purpose</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="purpose" value="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Meeting Person Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="name"
-                                            value="<?=$name?>">
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <label for="inputEmail" class="col-sm-2 col-form-label">Registered By</label>
-                                    <div class="col-sm-10">
-                                        <input type="email" class="form-control" value="<?=$userEmail?>" name="email"
-                                            readonly>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Campus</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="campus"
-                                            value="<?=$userdata['campus']?>" id="campus" readonly>
-                                    </div>
-                                </div>
-                                <!-- <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Gate No</label>
-                  <div class="col-sm-10">
-                  <select class="form-select" aria-label="Default select example" name="gateno" id="gateno">
-                      <option selected>Open this select menu</option>
-                    </select>
-                  </div>
-                </div> -->
+                                
 
 
                                 <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label">Submit Data</label>
+                                    <label class="col-sm-2 col-form-label">Update Image</label>
                                     <div class="col-sm-10">
-                                        <button type="submit" class="btn btn-primary" name="register">Submit</button>
+                                        <button type="submit" class="btn btn-primary" name="update">Upload </button>
                                     </div>
                                 </div>
 

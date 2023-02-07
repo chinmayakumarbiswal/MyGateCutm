@@ -6,7 +6,19 @@ if($_SESSION['email'])
   $userEmail=$_SESSION['email'];
   $name=$_SESSION['name'];
   $picture=$_SESSION['image'];
+  $userType=$_SESSION['userType'];
   
+  if($userType == "employee"){
+    $userProfileUpdate='<li>
+    <a class="dropdown-item d-flex align-items-center" href="./updateProfile.php">
+      <i class="bi bi-card-image"></i>
+      <span>Update Profile</span>
+    </a>
+  </li>';
+  
+  }else {
+    $userProfileUpdate='';
+  }
 }
 else {
   header('location:../include/logout.php');
@@ -77,6 +89,7 @@ else {
               <h6><?=$name?></h6>
               <span>User</span>
             </li>
+            <?=$userProfileUpdate?>
             <li>
               <a class="dropdown-item d-flex align-items-center" href="../include/logout.php">
                 <i class="bi bi-box-arrow-right"></i>
