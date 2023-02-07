@@ -169,7 +169,7 @@ if(isset($_POST['update'])){
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Tech Expert Registration</h5>
+                            <h5 class="card-title">Update Profile Photo</h5>
 
                             <!-- General Form Elements -->
                             <form action="" method="post" enctype="multipart/form-data">

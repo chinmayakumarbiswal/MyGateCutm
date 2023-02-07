@@ -195,7 +195,7 @@ if(isset($_POST['register'])){
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Tech Expert Registration</h5>
+                            <h5 class="card-title">Registration </h5>
 
                             <!-- General Form Elements -->
                             <form action="" method="post" enctype="multipart/form-data">
