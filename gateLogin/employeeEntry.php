@@ -23,6 +23,7 @@ if(isset($_POST['find'])){
     $allEmployee=getEmployeeDetailsById($db,$empId);
     $empid=$allEmployee['empId'];
     $empName=$allEmployee['name'];
+    $empDesc=$allEmployee['dept'];
     $inTime="";
     $outTime="";
     $image=$allEmployee['image'];
@@ -50,6 +51,7 @@ if(isset($_POST['find'])){
 }else {
   $empid="";
   $empName="";
+  $empDesc="";
   $inTime="";
   $outTime="";
   $image="images.png";
@@ -259,6 +261,13 @@ if(isset($_POST['find'])){
                       <label for="inputText" class="col-sm-4 col-form-label">Name of Employee</label>
                       <div class="col-sm-8">
                         <input type="text" class="form-control" name="EntempName" value="<?=$empName?>" readonly >
+                      </div>
+                    </div> 
+
+                    <div class="row mb-3">
+                      <label for="inputText" class="col-sm-4 col-form-label">Employee Designation</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" name="EntempName" value="<?=$empDesc?>" readonly >
                       </div>
                     </div> 
 

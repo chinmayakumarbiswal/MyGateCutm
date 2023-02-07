@@ -10,7 +10,8 @@ if($_SESSION['userType']=="gate")
   $getGateUserData=getGateUserDetails($db,$userEmail);
   date_default_timezone_set("Asia/Kolkata");
   $toDayDateIs=date("Y-m-d");
-  echo $toDayDateIs;
+  $timeIs=date("h:i A");
+  echo $timeIs;
 }
 else {
   header('location:../include/logout.php');
@@ -51,7 +52,7 @@ if(isset($_POST['register'])){
     
     $file = $folderPath . $fileName;
     if(file_put_contents($file, $image_base64)){
-      $query="INSERT INTO visitordata (visitingID,nameOfVisit,org,date,no,vehicleno,purpose,meetingName,registerEmail,campus,gate,photos) VALUES('$visitingID','$nameOfVisit','$org','$date','$number','$vehicle','$purpose','$name','$email','$campus','$gateno','$fileName')";
+      $query="INSERT INTO visitordata (visitingID,nameOfVisit,org,date,enterTime,no,vehicleno,purpose,meetingName,registerEmail,campus,gate,photos) VALUES('$visitingID','$nameOfVisit','$org','$date','$timeIs','$number','$vehicle','$purpose','$name','$email','$campus','$gateno','$fileName')";
       $run=mysqli_query($db,$query) or die(mysqli_error($db));
       $myimg="https://mygate.cutm.ac.in/userImage/".$fileName;
       
@@ -103,7 +104,7 @@ if(isset($_POST['register'])){
       echo "<script>alert('unable to upload image contact to IT Admin.');</script>";
     }
   }else{
-    $query="INSERT INTO visitordata (visitingID,nameOfVisit,org,date,no,vehicleno,purpose,meetingName,registerEmail,campus,gate,photos) VALUES('$visitingID','$nameOfVisit','$org','$date','$number','$vehicle','$purpose','$name','$email','$campus','$gateno','images.png')";
+    $query="INSERT INTO visitordata (visitingID,nameOfVisit,org,date,enterTime,no,vehicleno,purpose,meetingName,registerEmail,campus,gate,photos) VALUES('$visitingID','$nameOfVisit','$org','$date','$timeIs','$number','$vehicle','$purpose','$name','$email','$campus','$gateno','images.png')";
     $run=mysqli_query($db,$query) or die(mysqli_error($db));
     $myimg="https://mygate.cutm.ac.in/userImage/images.png";
     if ($run) {
@@ -310,6 +311,12 @@ if(isset($_POST['register'])){
                   <label for="inputText" class="col-sm-2 col-form-label">Date of Visiting</label>
                   <div class="col-sm-10">
                     <input type="date" class="form-control" name="date" value="<?=$toDayDateIs?>" required>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="inputText" class="col-sm-2 col-form-label">Time of Visiting</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="date" value="<?=$timeIs?>" readonly>
                   </div>
                 </div>
                 <div class="row mb-3">
