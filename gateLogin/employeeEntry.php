@@ -19,6 +19,25 @@ else {
 
 if(isset($_POST['find'])){
   $empId=mysqli_real_escape_string($db,$_POST['empId']);
+
+  $getEmpQuery="SELECT * FROM employee WHERE empId='$empId'";
+  $runGetEmpQuery=mysqli_query($db,$getEmpQuery);
+  $totalEmpFind=mysqli_num_rows($runGetEmpQuery);
+  if($totalEmpFind >=1){
+    $empId=$empId;
+  }else {
+    $findAllEmpDetail=getAllCampusEmployeeId($db);
+    foreach($findAllEmpDetail as $findAllEmpDetails){
+      $getSingleEmpId=$findAllEmpDetails['empId'];
+      $get4DigitNo=substr($getSingleEmpId,6);
+      if($get4DigitNo == $empId){
+        $empId=$getSingleEmpId;
+        break;
+      }
+    } 
+  }
+
+
   if ($empId) {
     $allEmployee=getEmployeeDetailsById($db,$empId);
     $empid=$allEmployee['empId'];
@@ -239,7 +258,14 @@ if(isset($_POST['find'])){
         <div class="col-lg-12">
           <div class="row">
 
-
+            <div class="col-lg-6">
+              <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                  <h5 class="card-title">Employee Image</h5>
+                  <img class="img-fluid" src="../userImage/<?=$image?>" alt="searching image" height="auto" width="100%">
+                </div>
+              </div>
+            </div>
             
             <div class="col-lg-6">
               <div class="card recent-sales overflow-auto">
@@ -307,14 +333,7 @@ if(isset($_POST['find'])){
 
 
 
-            <div class="col-lg-6">
-              <div class="card recent-sales overflow-auto">
-                <div class="card-body">
-                  <h5 class="card-title">Employee Image</h5>
-                  <img class="img-fluid" src="../userImage/<?=$image?>" alt="searching image" height="auto" width="100%">
-                </div>
-              </div>
-            </div>
+            
 
             
           </div>

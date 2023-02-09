@@ -34,7 +34,7 @@ if(isset($_POST['registerEntry'])){
         $run=mysqli_query($db,$query) or die(mysqli_error($db));
         
         if ($run) {
-            $msg="Hello ".$getEName." Thank You for Visiting CUTM. You Entered to Campus on ".$date." at ".$enterTime." and come back from campus at ".$outTime;
+            $msg="Hello ".$getEName." Thank You for Visiting CUTM. You Entered to Campus on ".$date." at ".$enterTime." and leave the campus at ".$outTime;
             $isMailSend=smtp_mailer($getEemail,'Thank You for Visiting CUTM',$msg);
             echo "<script>alert('Thank You Bye');window.location.href = './employeeEntry.php';</script>";
         }
