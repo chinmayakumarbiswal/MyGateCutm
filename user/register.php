@@ -10,12 +10,7 @@ if($_SESSION['email'])
   $picture=$_SESSION['image'];
   $userType=$_SESSION['userType'];
   if ($userType == "employee") {
-    $userProfileUpdate='<li>
-        <a class="dropdown-item d-flex align-items-center" href="./updateProfile.php">
-        <i class="bi bi-card-image"></i>
-        <span>Update Profile</span>
-        </a>
-    </li>';
+    $userProfileUpdate='';
     $userdata=getEmployeeDetails($db,$userEmail);
   }elseif ($userType == "student") {
     $userProfileUpdate='';

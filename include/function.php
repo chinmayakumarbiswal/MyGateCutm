@@ -245,4 +245,14 @@
         return $data;
     }
 
+
+    function getAllCampusEmployeeId($db){
+        $query="SELECT * FROM employee GROUP BY empId";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
 ?>

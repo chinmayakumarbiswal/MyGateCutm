@@ -3,39 +3,42 @@ require('../include/database.php');
 require('../include/function.php');
 require('../mailer.php');
 
-if($_SESSION['email'])
+if($_SESSION['userType']=="admin")
 {
   $userEmail=$_SESSION['email'];
   $name=$_SESSION['name'];
   $picture=$_SESSION['image'];
-  $userType=$_SESSION['userType'];
-  if($userType == "employee"){
-    $userProfileUpdate='<li>
-    <a class="dropdown-item d-flex align-items-center" href="./updateProfile.php">
-      <i class="bi bi-card-image"></i>
-      <span>Update Profile</span>
-    </a>
-  </li>';
-  
-  }else {
-    $userProfileUpdate='';
-    echo "<script>alert('You are not a valid user .');window.location.href = './user.php';</script>";
-  }
+  $getAdminUserData=getAdminDetails($db,$userEmail);
+  date_default_timezone_set("Asia/Kolkata");
+  $toDayDateIs=date("Y-m-d");
+  echo $toDayDateIs;
 }
 else {
   header('location:../include/logout.php');
 }
 
+if($userEmail=="chinmayakumarbiswal45@gmail.com"){
+    $uploadImgSideBar='<li class="nav-item">
+                            <a class="nav-link" href="./updateProfile.php">
+                                <i class="bi bi-card-image"></i>
+                                <span>Update Image</span>
+                            </a>
+                        </li>';
+}else {
+    $uploadImgSideBar='';
+}
+
 if(isset($_POST['update'])){
+    $empId=mysqli_real_escape_string($db,$_POST['empId']);
     $image_name=$_FILES['image']['name'];
     $image_tmp=$_FILES['image']['tmp_name'];
     $filename=randPass().date('d-m-Y-H-i').$image_name;
   
     if(move_uploaded_file($image_tmp,"../userImage/$filename")){
-        $query="UPDATE `employee` SET `image`='$filename' WHERE email='$userEmail'";
+        $query="UPDATE `employee` SET `image`='$filename' WHERE empId='$empId'";
         $run=mysqli_query($db,$query);
         if($run){
-            echo "<script>alert('You profile image updated but it only visible for gate user.');</script>";
+            echo "<script>alert('user profile image updated but it only visible for gate user.');</script>";
         }else {
             echo "<script>alert('update error.');</script>";
         }
@@ -102,30 +105,28 @@ if(isset($_POST['update'])){
             <ul class="d-flex align-items-center">
                 <li class="nav-item dropdown pe-3">
 
-                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img src="<?=$picture?>" alt="Profile" class="rounded-circle">
-                        <span class="d-none d-md-block dropdown-toggle ps-2"><?=$name?></span>
-                    </a><!-- End Profile Iamge Icon -->
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <img src="<?=$picture?>" alt="Profile" class="rounded-circle">
+                    <span class="d-none d-md-block dropdown-toggle ps-2"><?=$name?></span>
+                </a><!-- End Profile Iamge Icon -->
 
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                        <li class="dropdown-header">
-                            <h6><?=$name?></h6>
-                            <span>User</span>
-                        </li>
-                        <?=$userProfileUpdate?>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="../include/logout.php">
-                                <i class="bi bi-box-arrow-right"></i>
-                                <span>Sign Out</span>
-                            </a>
-                        </li>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <li class="dropdown-header">
+                    <h6><?=$name?></h6>
+                    <span>Admin</span>
+                    </li>
+                    <li>
+                    <a class="dropdown-item d-flex align-items-center" href="../include/logout.php">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Sign Out</span>
+                    </a>
+                    </li>
 
-                    </ul><!-- End Profile Dropdown Items -->
+                </ul><!-- End Profile Dropdown Items -->
                 </li><!-- End Profile Nav -->
 
             </ul>
-        </nav><!-- End Icons Navigation -->
-
+        </nav>
     </header><!-- End Header -->
 
     <!-- ======= Sidebar ======= -->
@@ -134,18 +135,20 @@ if(isset($_POST['update'])){
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="./user.php">
-                    <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
+                <a class="nav-link collapsed" href="./admin.php">
+                <i class="ri-bar-chart-box-line"></i>
+                <span>Report</span>
                 </a>
-            </li><!-- End Dashboard Nav -->
+            </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="./register.php">
-                    <i class="bi bi-file-earmark"></i>
-                    <span>Register</span>
+                <a class="nav-link collapsed" href="./allReport.php">
+                <i class="bi bi-grid"></i>
+                <span>All Report</span>
                 </a>
-            </li><!-- End Blank Page Nav -->
+            </li>
+            <?=$uploadImgSideBar?>
+            
 
         </ul>
 
@@ -173,6 +176,23 @@ if(isset($_POST['update'])){
 
                             <!-- General Form Elements -->
                             <form action="" method="post" enctype="multipart/form-data">
+                                <div class="row mb-3">
+                                    <label for="inputText" class="col-sm-2 col-form-label">Enter Employee Id</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="empId" list="empId" value="">
+                                        <datalist id="empId">
+                                            <?php    
+                                                $getEmpId=getAllCampusEmployeeId($db);
+                                                foreach($getEmpId as $getEmpIds){
+                                            ?>
+                                                <option value="<?=$getEmpIds['empId']?>"><?=$getEmpIds['empId']?></option>
+                                            <?php    
+                                                }
+                                            ?>
+                                        </datalist>
+                                    </div>
+                                </div>    
+
                                 <div class="row mb-3">
                                     <label for="inputText" class="col-sm-2 col-form-label">Upload Profile Photos</label>
                                     <div class="col-sm-10">
@@ -224,24 +244,7 @@ if(isset($_POST['update'])){
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
-    <script>
-    function getTechExpert() {
-        let selection = document.getElementById('campus').value;
-        if (!selection) return;
-        document.getElementById('gateno').disabled = true
-        document.getElementById('gateno').innerHTML = '<option value="">Loading</option>';
-        axios.get("../include/getcampus.php?campus=" + selection).then((response) => {
-            console.log(response);
-            let options = '';
-            for (let each of response.data.data) {
-                options += `<option value="${each}">${each}</option>`;
-            }
-            document.getElementById('gateno').innerHTML = options;
-            document.getElementById('gateno').disabled = false;
-        })
-    }
-    getTechExpert();
-    </script>
+   
 
 </body>
 

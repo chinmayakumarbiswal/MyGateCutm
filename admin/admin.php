@@ -15,6 +15,18 @@ else {
   header('location:../include/logout.php');
 }
 
+if($userEmail=="chinmayakumarbiswal45@gmail.com"){
+  $uploadImgSideBar='<li class="nav-item">
+                          <a class="nav-link" href="./updateProfile.php">
+                              <i class="bi bi-card-image"></i>
+                              <span>Update Image</span>
+                          </a>
+                      </li>';
+}else {
+  $uploadImgSideBar='';
+}
+
+
 if(isset($_POST['find'])){
   $visitingNo=mysqli_real_escape_string($db,$_POST['visitingNo']);
   $nameOfVisit=mysqli_real_escape_string($db,$_POST['nameOfVisit']);
@@ -110,7 +122,7 @@ if(isset($_POST['find'])){
         </li><!-- End Profile Nav -->
 
       </ul>
-    </nav><!-- End Icons Navigation -->
+    </nav>
 
   </header><!-- End Header -->
 
@@ -131,7 +143,7 @@ if(isset($_POST['find'])){
           <span>All Report</span>
         </a>
       </li>
-
+      <?=$uploadImgSideBar?>
 
     </ul>
 
