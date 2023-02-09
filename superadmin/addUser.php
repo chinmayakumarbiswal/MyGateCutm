@@ -310,6 +310,7 @@ $getDataForTable=getAllUserByAdminForList($db);
                       <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Department</th>
                         <th scope="col">Campus</th>
                       </tr>
                     </thead>
@@ -320,6 +321,7 @@ $getDataForTable=getAllUserByAdminForList($db);
                       <tr class="table-primary">
                         <td><?=$getDataForTables['name']?></td>
                         <td><?=$getDataForTables['email']?></td>
+                        <td><?=$getDataForTables['dept']?></td>
                         <td><?=$getDataForTables['campus']?></td>
                       </tr>
                       <?php    
