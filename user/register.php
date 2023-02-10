@@ -10,7 +10,12 @@ if($_SESSION['email'])
   $picture=$_SESSION['image'];
   $userType=$_SESSION['userType'];
   if ($userType == "employee") {
-    $userProfileUpdate='';
+    $userProfileUpdate='<li class="nav-item">
+    <a class="nav-link collapsed" href="./gateEntry.php">
+      <i class="bi bi-card-checklist"></i>
+      <span>Gate Entry</span>
+    </a>
+  </li>';
     $userdata=getEmployeeDetails($db,$userEmail);
   }elseif ($userType == "student") {
     $userProfileUpdate='';
@@ -133,7 +138,7 @@ if(isset($_POST['register'])){
                             <h6><?=$name?></h6>
                             <span>User</span>
                         </li>
-                        <?=$userProfileUpdate?>
+                        
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="../include/logout.php">
                                 <i class="bi bi-box-arrow-right"></i>
@@ -166,7 +171,8 @@ if(isset($_POST['register'])){
                     <i class="bi bi-file-earmark"></i>
                     <span>Register</span>
                 </a>
-            </li><!-- End Blank Page Nav -->
+            </li>
+            <?=$userProfileUpdate?>
 
         </ul>
 

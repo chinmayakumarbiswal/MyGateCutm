@@ -255,4 +255,24 @@
         }
         return $data;
     }
+
+    function getEmployeeEntryByEmp($db,$fromDate,$ToDate,$empId){
+        $query="SELECT * FROM entryrigister WHERE empId ='$empId' AND date BETWEEN '$fromDate' AND '$ToDate' ORDER BY id DESC";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
+
+    function getEmployeeEntryByEmpOnlyToDay($db,$toDayDateIs,$empId){
+        $query="SELECT * FROM entryrigister WHERE empId ='$empId' AND date='$toDayDateIs' ORDER BY id DESC";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
 ?>

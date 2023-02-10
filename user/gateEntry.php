@@ -7,10 +7,14 @@ if($_SESSION['email'])
   $name=$_SESSION['name'];
   $picture=$_SESSION['image'];
   $userType=$_SESSION['userType'];
-  
+  $aboutEmployee=getEmployeeDetails($db,$userEmail);
+
+  date_default_timezone_set("Asia/Kolkata");
+  $toDayDateIs=date("Y-m-d");
+
   if($userType == "employee"){
     $userProfileUpdate='<li class="nav-item">
-    <a class="nav-link collapsed" href="./gateEntry.php">
+    <a class="nav-link" href="./gateEntry.php">
       <i class="bi bi-card-checklist"></i>
       <span>Gate Entry</span>
     </a>
@@ -18,10 +22,27 @@ if($_SESSION['email'])
   
   }else {
     $userProfileUpdate='';
+    echo "<script>alert('You are not a valid user.');window.location.href = './user.php';</script>";
   }
 }
 else {
   header('location:../include/logout.php');
+}
+
+if(isset($_POST['findEnt'])){
+  $fromDate=mysqli_real_escape_string($db,$_POST['fromDate']);
+  $ToDate=mysqli_real_escape_string($db,$_POST['ToDate']);
+  if ($fromDate > $ToDate) {
+    echo "<script>alert('Select a valid date');</script>";
+    $headerContent="of ".$toDayDateIs;
+    $employeeEntryData=getEmployeeEntryByEmpOnlyToDay($db,$toDayDateIs,$aboutEmployee['empId']);
+  }else {
+    $headerContent="from ".$fromDate." to ".$ToDate;
+    $employeeEntryData=getEmployeeEntryByEmp($db,$fromDate,$ToDate,$aboutEmployee['empId']);
+  }
+}else {
+  $headerContent="of ".$toDayDateIs;
+  $employeeEntryData=getEmployeeEntryByEmpOnlyToDay($db,$toDayDateIs,$aboutEmployee['empId']);
 }
 
 ?>
@@ -111,7 +132,7 @@ else {
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " href="./user.php">
+        <a class="nav-link collapsed" href="./user.php">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
@@ -141,6 +162,47 @@ else {
       </nav>
     </div><!-- End Page Title -->
 
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Find Entry Details</h5>
+
+              <!-- General Form Elements -->
+              <form action="" method="post" >
+                
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">From Date</label>
+                  <div class="col-sm-10">
+                    <input type="date" class="form-control" name="fromDate" required>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">To Date</label>
+                  <div class="col-sm-10">
+                    <input type="date" class="form-control" name="ToDate" required>
+                  </div>
+                </div>
+                
+                
+                
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Find Entry</label>
+                  <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary" name="findEnt">Find</button>
+                  </div>
+                </div>
+
+              </form><!-- End General Form Elements -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section dashboard">
       <div class="row">
 
@@ -153,39 +215,26 @@ else {
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
                 <div class="card-body">
-                  <h5 class="card-title">Total Data</h5>
+                  <h5 class="card-title">Total Data <?=$headerContent?></h5>
 
                   <table class="table table-borderless datatable">
                     <thead>
                       <tr>
-                      <th scope="col">Visiting Id</th>
-                        <th scope="col">Name Of Visitor</th>
-                        <th scope="col">Comming From</th>
-                        <th scope="col">Date of Visiting</th>
-                        <th scope="col">Mobile</th>
-                        <th scope="col">Vehicle Number</th>
-                        <th scope="col">Purpose</th>
-                        <th scope="col">Meeting Name</th>
-                        <th scope="col">Register By</th>
-                        <th scope="col">Image</th>
+                        <th scope="col">Employee Id</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">In Time</th>
+                        <th scope="col">Out Time</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <?php
-                        $getDataForTable=getAllDetaild($db,$userEmail);          
-                        foreach($getDataForTable as $getDataForTables){
+                      <?php     
+                        foreach($employeeEntryData as $employeeEntryDatas){
                       ?>
                       <tr>
-                        <td><?=$getDataForTables['visitingID']?></td>
-                        <td><?=$getDataForTables['nameOfVisit']?></td>
-                        <td><?=$getDataForTables['org']?></td>
-                        <td><?=$getDataForTables['date']?></td>
-                        <td><?=$getDataForTables['no']?></td>
-                        <td><?=$getDataForTables['vehicleno']?></td>
-                        <td><?=$getDataForTables['purpose']?></td>
-                        <td><?=$getDataForTables['meetingName']?></td>
-                        <td><?=$getDataForTables['registerEmail']?></td>
-                        <td><img class="img-fluid" src="../userImage/<?=$getDataForTables['photos']?>" alt="" height="50px" width="50px"></td>
+                        <td><?=$employeeEntryDatas['empId']?></td>
+                        <td><?=$employeeEntryDatas['date']?></td>
+                        <td><?=$employeeEntryDatas['inTime']?></td>
+                        <td><?=$employeeEntryDatas['outTime']?></td>
                       </tr>
                       <?php
                         }
