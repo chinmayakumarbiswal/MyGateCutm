@@ -1,6 +1,10 @@
 <?php
 require('../include/database.php');
 require('../include/function.php');
+
+date_default_timezone_set("Asia/Kolkata");
+$toDayDateIs=date("Y-m-d");
+
 if($_SESSION['userType']=="admin")
 {
   $userEmail=$_SESSION['email'];
@@ -26,20 +30,20 @@ if($userEmail=="chinmayakumarbiswal45@gmail.com"){
 }
 
 
-if(isset($_POST['find'])){
-  $visitingNo=mysqli_real_escape_string($db,$_POST['visitingNo']);
-  $nameOfVisit=mysqli_real_escape_string($db,$_POST['nameOfVisit']);
-
-  if ($visitingNo) {
-    echo $visitingNo;
-    $getDataForTable=getAllVisitorInGateWithVigitNo($db,$getAdminUserData['campus'],$visitingNo);  
-  }else if ($nameOfVisit) {
-    $getDataForTable=getAllVisitorInGateWithVigitName($db,$getAdminUserData['campus'],$nameOfVisit);
-  }else{
-    $getDataForTable=getAllDataildInGateWirhCampus($db,$getAdminUserData['campus']);   
+if(isset($_POST['findEnt'])){
+  $fromDate=mysqli_real_escape_string($db,$_POST['fromDate']);
+  $ToDate=mysqli_real_escape_string($db,$_POST['ToDate']);
+  if ($fromDate > $ToDate) {
+    echo "<script>alert('Select a valid date');</script>";
+    $headerContent="of ".$toDayDateIs;
+    $employeeEntryData=getAllEmployeeEntry($db,$toDayDateIs);
+  }else {
+    $headerContent="from ".$fromDate." to ".$ToDate;
+    $employeeEntryData=getEmployeeEntryFromTo($db,$fromDate,$ToDate);
   }
-}else{
-  $getDataForTable=getAllDataildInGateWirhCampus($db,$getAdminUserData['campus']);   
+}else {
+  $headerContent="of ".$toDayDateIs;
+  $employeeEntryData=getAllEmployeeEntry($db,$toDayDateIs);
 }
 
 ?>
@@ -139,14 +143,14 @@ if(isset($_POST['find'])){
           <span>All Report</span>
         </a>
       </li>
-
+      
       <li class="nav-item">
         <a class="nav-link" href="./gateEntryReport.php">
           <i class="bi bi-door-open"></i>
           <span>All Entry Report</span>
         </a>
       </li>
-      
+
       <?=$uploadImgSideBar?>
 
     </ul>
@@ -171,46 +175,36 @@ if(isset($_POST['find'])){
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">All Visitor List</h5>
+              <h5 class="card-title">Find Entry Details</h5>
 
               <!-- General Form Elements -->
-              <form action="" method="post" enctype="multipart/form-data">
+              <form action="" method="post" >
+                
                 <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Visiting Number</label>
+                  <label class="col-sm-2 col-form-label">From Date</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="visitingNo" list="visitingNoList" value="">
-                    <datalist id="visitingNoList">
-                      <?php    
-                        $getVisitorId=getAllVisitorIds($db,$getAdminUserData['campus']);
-                        foreach($getVisitorId as $getVisitorIds){
-                      ?>
-                        <option value="<?=$getVisitorIds['visitingID']?>"><?=$getVisitorIds['visitingID']?></option>
-                      <?php    
-                        }
-                      ?>
-                    </datalist>
+                    <input type="date" class="form-control" name="fromDate" required>
                   </div>
                 </div>
+
                 <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Name of Visitor</label>
+                  <label class="col-sm-2 col-form-label">To Date</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="nameOfVisit" list="visitingNameList" value="">
-                    <datalist id="visitingNameList">
-                      <?php    
-                        $getVisitorName=getAllVisitorNames($db,$getAdminUserData['campus']);
-                        foreach($getVisitorName as $getVisitorNames){
-                      ?>
-                        <option value="<?=$getVisitorNames['nameOfVisit']?>"><?=$getVisitorNames['nameOfVisit']?></option>
-                      <?php    
-                        }
-                      ?>
-                    </datalist>
+                    <input type="date" class="form-control" name="ToDate" required>
                   </div>
                 </div>
+                
+                
+                
                 <div class="row mb-3">
-                  <label class="col-sm-2 col-form-label">Search List</label>
-                  <div class="col-sm-10">
-                    <button type="submit" class="btn btn-primary" name="find">Find</button>
+                  <label class="col-sm-2 col-form-label">Find Entry</label>
+                  <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary" name="findEnt">Find</button>
+                  </div>
+
+                  <label class="col-sm-3 col-form-label">Print Entry Data Data</label>
+                  <div class="col-sm-3">
+                    <button type="button" class="btn btn-primary" onclick="printTable()">Print To Excel</button>
                   </div>
                 </div>
 
@@ -233,39 +227,32 @@ if(isset($_POST['find'])){
             <div class="col-12">
               <div class="card recent-sales overflow-auto">
                 <div class="card-body">
-                  <h5 class="card-title">Applied Student</h5>
+                  <h5 class="card-title">Total Data <?=$headerContent?></h5>
 
-                  <table class="table table-borderless datatable">
-                  <thead>
+                  <table class="table table-borderless datatable" id="tableData">
+                    <thead>
                       <tr>
-                      <th scope="col">Visiting ID</th>
-                        <th scope="col">Name Of Visitor</th>
-                        <th scope="col">Comming From</th>
-                        <th scope="col">Date of Visiting</th>
-                        <th scope="col">Mobile</th>
-                        <th scope="col">Vehicle Number</th>
-                        <th scope="col">Purpose</th>
-                        <th scope="col">Meeting Name</th>
-                        <th scope="col">Register By</th>
-                        <th scope="col">Image</th>
+                        <th scope="col">Employee Id</th>
+                        <th scope="col">Employee Name</th>
+                        <th scope="col">Employee Email</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">In Time</th>
+                        <th scope="col">Out Time</th>
                       </tr>
                     </thead>
                     <tbody>
                       <?php     
-                        foreach($getDataForTable as $getDataForTables){
+                        foreach($employeeEntryData as $employeeEntryDatas){
+                          $getEmpFullData=getEmployeeDetailsById($db,$employeeEntryDatas['empId']);
                       ?>
                       <tr>
-                        <td><?=$getDataForTables['visitingID']?></td>
-                        <td><?=$getDataForTables['nameOfVisit']?></td>
-                        <td><?=$getDataForTables['org']?></td>
-                        <td><?=$getDataForTables['date']?></td>
-                        <td><?=$getDataForTables['no']?></td>
-                        <td><?=$getDataForTables['vehicleno']?></td>
-                        <td><?=$getDataForTables['purpose']?></td>
-                        <td><?=$getDataForTables['meetingName']?></td>
-                        <td><?=$getDataForTables['registerEmail']?></td>
-                        <td><img class="img-fluid" src="../userImage/<?=$getDataForTables['photos']?>" alt="" height="50px" width="50px"></td>
-                       
+                        <td><?=$employeeEntryDatas['empId']?></td>
+                        <td><?=$getEmpFullData['name']?></td>
+                        <td><?=$getEmpFullData['email']?></td>
+                        <td><?=$employeeEntryDatas['date']?></td>
+                        <td><?=$employeeEntryDatas['inTime']?></td>
+                        <td><?=$employeeEntryDatas['outTime']?></td>
+                      </tr>
                       <?php
                         }
                       ?>
@@ -312,8 +299,21 @@ if(isset($_POST['find'])){
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    
+  <script>
+    function printTable() {
+      let data = document.getElementById('tableData');
+      var fp = XLSX.utils.table_to_book(data, {sheet: 'cutm'});
+      XLSX.write(fp, {
+          bookType: 'xlsx',
+          type: 'base64'
+      });
+      XLSX.writeFile(fp, 'entryData.xlsx')
+    }
+    
+  </script>
  
 
 </body>

@@ -275,4 +275,24 @@
         }
         return $data;
     }
+
+    function getAllEmployeeEntry($db,$toDayDateIs){
+        $query="SELECT * FROM entryrigister WHERE date='$toDayDateIs' ORDER BY id DESC";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
+
+    function getEmployeeEntryFromTo($db,$fromDate,$ToDate){
+        $query="SELECT * FROM entryrigister WHERE date BETWEEN '$fromDate' AND '$ToDate' ORDER BY empId DESC";
+        $run=mysqli_query($db,$query);
+        $data=array();
+        while($d=mysqli_fetch_assoc($run)){
+            $data[]=$d;
+        }
+        return $data;
+    }
 ?>

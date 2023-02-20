@@ -143,6 +143,14 @@ if(isset($_POST['find'])){
           <span>All Report</span>
         </a>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="./gateEntryReport.php">
+          <i class="bi bi-door-open"></i>
+          <span>All Entry Report</span>
+        </a>
+      </li>
+      
       <?=$uploadImgSideBar?>
 
     </ul>
